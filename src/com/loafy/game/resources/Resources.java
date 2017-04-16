@@ -33,7 +33,7 @@ public class Resources {
         else if (os.contains("NUX"))
             gameLocation = System.getProperty("user.home");
 
-        gameLocation += "\\.loafy";
+        gameLocation += "/loafy";
 
         System.out.println("Found home location at " + gameLocation);
 
