@@ -24,7 +24,7 @@ public class Controls {
         InputStream stream;
 
         try {
-            File file = Main.makeFile(filePath, fileName);
+            File file = Resources.makeFile(filePath, fileName);
             stream = new FileInputStream(file);
             properties.load(stream);
         } catch (Exception e) {

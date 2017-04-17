@@ -31,7 +31,7 @@ public class EntityGoat extends EntityLiving {
         super.render(xOffset, yOffset);
     }
 
-    public void update(int delta) {
+    public void update(float delta) {
 
         // a i b o i s
 

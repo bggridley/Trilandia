@@ -14,12 +14,10 @@ import java.io.FileWriter;
 
 public class WorldLoader {
 
-
-
     public static void save(Object data, String worldName, String fileName) {
         try {
             Gson gson = new Gson();
-            FileWriter writer = new FileWriter(WorldLoader.getWorldPath(worldName) + "\\" + fileName);
+            FileWriter writer = new FileWriter(WorldLoader.getWorldPath(worldName) + "/" + fileName);
             gson.toJson(data, writer);
             writer.flush();
         } catch (Exception e) {
@@ -30,7 +28,7 @@ public class WorldLoader {
     public static Object load(Class clazz, String worldName, String fileName) {
         try {
             Gson gson = new Gson();
-            FileReader reader = new FileReader(WorldLoader.getWorldPath(worldName) + "\\" + fileName);
+            FileReader reader = new FileReader(WorldLoader.getWorldPath(worldName) + "/" + fileName);
             Object data = gson.fromJson(reader, clazz);
             reader.close();
             return data;
@@ -93,7 +91,7 @@ public class WorldLoader {
     public static Chunk fetchChunk(String worldName, int chunkX, int chunkY) {
         try {
             Gson gson = new Gson();
-            FileReader reader = new FileReader(WorldLoader.getWorldPath(worldName) + "\\chunkData\\chunk" + chunkX + "," + chunkY);
+            FileReader reader = new FileReader(WorldLoader.getWorldPath(worldName) + "/chunkData/chunk" + chunkX + "," + chunkY);
             ChunkData data = gson.fromJson(reader, ChunkData.class);
             reader.close();
 
@@ -122,7 +120,7 @@ public class WorldLoader {
 
     public static void saveChunk(String worldName, Chunk chunk, Gson gson) {
         try {
-            String path = WorldLoader.getWorldPath(worldName) + "\\chunkData\\chunk" + chunk.getChunkX() + "," + chunk.getChunkY();
+            String path = WorldLoader.getWorldPath(worldName) + "/chunkData/chunk" + chunk.getChunkX() + "," + chunk.getChunkY();
             File file = new File(path);
 
             if (!file.exists()) {
@@ -141,6 +139,6 @@ public class WorldLoader {
     }
 
     protected static String getWorldPath(String worldName) {
-        return Resources.gameLocation + "\\saves\\" + worldName;
+        return Resources.gameLocation + "/saves/" + worldName;
     }
 }

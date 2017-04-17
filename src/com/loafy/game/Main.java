@@ -34,23 +34,19 @@ public class Main {
     public static int height = 360;
     public static int scale = 2;
 
-    public static int FPS = 120;
-    public static int UPS = 60;
+    //this means fps can change but will still update the same
+    public static int FPS = 15; // PREFERRED FPS
+    public static float constantInterval = 1000 / 30; // CONSTANT TICK XD
 
-    public long lastFrame;
+    public static int delta;
+
+    private long lastFrame;
 
     private static Drawable drawable;
 
-    public int getDelta() {
-        long time = getTime();
-        int delta = (int) (time - lastFrame);
-        lastFrame = time;
-
-        return delta;
-    }
-
-    private long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    public static void main(String args[]) {
+        initResources();
+        new Main();
     }
 
     public Main() {
@@ -77,8 +73,13 @@ public class Main {
                 frames++;
                 updates++;
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-                int delta = getDelta();
-                getState().update(delta);
+
+                delta = getDelta();
+
+                if(getState() != null)
+                    getState().update(delta / constantInterval);
+
+                System.out.println(delta / constantInterval);
                 Display.makeCurrent();
                 getState().render();
                 InputManager.update();
@@ -90,8 +91,8 @@ public class Main {
                     updates = 0;
                 }
 
-                Display.sync(FPS);
                 Display.update();
+                Display.sync(FPS);
             }
 
         } catch (Exception e) {
@@ -101,11 +102,22 @@ public class Main {
         cleanUp();
     }
 
+    private int getDelta() {
+        long time = getTime();
+        int delta = (int) (time - lastFrame);
+        lastFrame = time;
+
+        return delta;
+    }
+
+    private long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
     public void init() {
-        initCursor();
         initOpenGl();
         Resources.init();
-        KeyConversions.initConversions();
+        KeyConversions.init();
         Controls.init();
         Materials.init();
         InputManager.init();
@@ -115,20 +127,12 @@ public class Main {
         state = GameState.MENU;
     }
 
-    public void initCursor() {
-        try {
-            final LoadableImageData data = ImageDataFactory.getImageDataFor(Resources.gameLocation + "/res/gui/mouse.png");
-            data.loadImage(new FileInputStream(Resources.gameLocation + "/res/gui/mouse.png"), true, true, null);
-            CursorLoader loader = CursorLoader.get();
-            Cursor cursor = loader.getCursor(data, 0, 0);
-
-            Mouse.setNativeCursor(cursor);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private static void initResources() {
+        Resources.initGameLocation();
+        System.setProperty("org.lwjgl.librarypath", (new File(Resources.gameLocation + "/lib/natives/" + LWJGLUtil.getPlatformName()).getAbsolutePath()));
     }
 
-    public void initOpenGl() {
+    private void initOpenGl() {
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
@@ -136,20 +140,10 @@ public class Main {
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
-    public static void initResources() {
-        Resources.initGameLocation();
-        System.setProperty("org.lwjgl.librarypath", (new File(Resources.gameLocation + "/lib/natives/" + LWJGLUtil.getPlatformName()).getAbsolutePath()));
-    }
-
     public static void cleanUp() {
         AL.destroy();
         Display.destroy();
         System.exit(0);
-    }
-
-    public static void main(String args[]) {
-        initResources();
-        new Main();
     }
 
     public static void setState(int statee) {
@@ -169,12 +163,5 @@ public class Main {
 
     public static Drawable getDrawable() {
         return drawable;
-    }
-
-    public static File makeFile(String filePath, String fileName) throws Exception {
-        File file = new File(filePath, fileName);
-        file.getParentFile().mkdirs();
-        if (!file.exists()) file.createNewFile();
-        return file;
     }
 }

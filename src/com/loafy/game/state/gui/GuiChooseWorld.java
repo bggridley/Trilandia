@@ -59,9 +59,10 @@ public class GuiChooseWorld extends Gui {
             }
         });
 
-        for (File file : directories) {
-            String dir = file.getPath();
+        if(directories == null)
+            return;
 
+        for (File file : directories) {
             worlds.put(file.getName(), (WorldData) WorldLoader.load(WorldData.class, file.getName(), "world.dat"));
         }
 

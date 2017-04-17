@@ -81,16 +81,16 @@ public class EntityPlayer extends EntityLiving {
         closeInventory(); // hotbar slots
     }
 
-    public void move(int delta) {
+    public void move(float delta) {
         super.move(delta);
 
         if (dx > 0)
-            world.bxOffset += (0.75 * delta) / 1000 * Main.UPS;
+            world.bxOffset += 0.75 * delta; //(0.75 * delta) / 1000 * Main.UPS;
         else if (dx < 0)
-            world.bxOffset += (-0.75 * delta) / 1000 * Main.UPS;
+            world.bxOffset += -0.75 * delta; //(-0.75 * delta) / 1000 * Main.UPS;
     }
 
-    public void update(int delta) {
+    public void update(float delta) {
         controller.update();
         handleAnimations();
 

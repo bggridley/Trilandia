@@ -26,14 +26,14 @@ public class EntityLiving extends Entity {
         if (!falling && !jumping) jumping = true;
     }
 
-    public void calculateMovement(int delta) {
+    public void calculateMovement(float delta) {
         if (left) dx = -speed;
         if (right) dx = speed;
 
         if (left && right) dx = 0;
 
         if (falling && !jumping) {
-            float add = GRAVITY * ((float)Main.UPS / (float)Main.FPS);
+            float add = GRAVITY * delta;
             dy += add;
             if (dy > MAX_FALLING_SPEED) {  dy = MAX_FALLING_SPEED; }
 

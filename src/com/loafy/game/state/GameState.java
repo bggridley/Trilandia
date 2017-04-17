@@ -8,7 +8,7 @@ public interface GameState {
     int MENU = 0;
     int INGAME = 1;
 
-    void update(int delta);
+    void update(float delta);
 
     void render();
 

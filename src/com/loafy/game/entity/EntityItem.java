@@ -9,7 +9,7 @@ import com.loafy.game.world.World;
 public class EntityItem extends Entity {
 
     private Item item;
-    private final int pickupTime = 120 * (Main.FPS / Main.UPS);
+    private final int pickupTime = 120; //* (Main.FPS / Main.UPS);
 
 
     public EntityItem(World world, float x, float y, Item item) {

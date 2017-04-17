@@ -156,7 +156,7 @@ public class World {
         rendering = false;
     }
 
-    public void update(int delta) {
+    public void update(float delta) {
         updateChunks();
 
         for (Entity entity : entities) {

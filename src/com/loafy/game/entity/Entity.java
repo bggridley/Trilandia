@@ -55,7 +55,7 @@ public class Entity {
 
     public float startY, endY;
 
-    public int immunity = 240 * (Main.FPS / Main.UPS);
+    public int immunity = 240;
     public int time;
 
     public Entity(World world, float x, float y) {
@@ -70,25 +70,25 @@ public class Entity {
         animation.render(x - xOffset, y - yOffset);
     }
 
-    public void update(int delta) {
+    public void update(float delta) {
         calculateMovement(delta);
         calculateCollisions(delta);
         move(delta);
         this.box = new Rectangle(x + 4, y + 4, width - 8, height - 8);
 
-        time++;
+        time+=delta;
     }
 
-    public void calculateMovement(int delta) {
+    public void calculateMovement(float delta) {
         if (falling) {
-            dy += GRAVITY * ((float)Main.UPS / (float)Main.FPS);
+            dy += GRAVITY * delta;
             if (dy > MAX_FALLING_SPEED) dy = MAX_FALLING_SPEED;
         }
     }
 
-    public void calculateCollisions(int delta) {
-        float tox = x + (dx * delta) / 1000 * Main.UPS;
-        float toy = y + (dy * delta) / 1000 * Main.UPS;
+    public void calculateCollisions(float delta) {
+        float tox = x + (dx) * delta;
+        float toy = y + (dy) * delta;
 
         calculateCorners(tox, y - 1);
         if (dx < 0) {
@@ -175,13 +175,13 @@ public class Entity {
         }
     }
 
-    public void move(int delta) {
-        x += (dx * delta) / 1000 * Main.UPS;
-        y += (dy * delta) / 1000 * Main.UPS;
+    public void move(float delta) {
+        x += (dx) * delta; //* delta) / 1000 * Main.UPS;
+        y += (dy) * delta; //* delta) / 1000 * Main.UPS;
 
         if(this instanceof EntityPlayer) {
-            world.xOffset += (dx * delta) / 1000 * Main.UPS;
-            world.yOffset += (dy * delta) / 1000 * Main.UPS;
+            world.xOffset += (dx) * delta; //* delta) / 1000 * Main.UPS;
+            world.yOffset += (dy) * delta; //* delta) / 1000 * Main.UPS;
         }
 
 

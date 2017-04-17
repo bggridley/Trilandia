@@ -1,7 +1,15 @@
 package com.loafy.game.resources;
 
 import com.loafy.game.gfx.*;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Mouse;
 import org.newdawn.slick.Sound;
+import org.newdawn.slick.opengl.CursorLoader;
+import org.newdawn.slick.opengl.ImageDataFactory;
+import org.newdawn.slick.opengl.LoadableImageData;
+
+import java.io.File;
+import java.io.FileInputStream;
 
 public class Resources {
 
@@ -44,6 +52,7 @@ public class Resources {
         loadImages();
         loadSounds();
         loadSprites();
+        initCursor();
         loadFont();
     }
 
@@ -75,7 +84,43 @@ public class Resources {
         blocksSprite = new SpriteSheet(Texture.loadBi("blocks.png", 2), 16, 16);
     }
 
+    public static void initCursor() {
+        try {
+            final LoadableImageData data = ImageDataFactory.getImageDataFor(Resources.gameLocation + "/res/gui/mouse.png");
+            data.loadImage(new FileInputStream(Resources.gameLocation + "/res/gui/mouse.png"), true, true, null);
+            CursorLoader loader = CursorLoader.get();
+            Cursor cursor = loader.getCursor(data, 0, 0);
+
+            Mouse.setNativeCursor(cursor);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void loadFont() {
         Font.initFont();
+    }
+
+    /**
+     * Creates directories.
+     */
+
+    public static File makeFile(String path) {
+        File file = new File(path);
+        file.mkdirs();
+        return file;
+    }
+
+    public static File makeFile(String filePath, String fileName) {
+        try {
+            makeFile(filePath);
+
+            File file = new File(filePath, fileName);
+            if (!file.exists()) file.createNewFile();
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

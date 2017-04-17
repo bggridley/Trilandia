@@ -10,7 +10,7 @@ public class KeyConversions {
     public static HashMap<Integer, String> keyCodes = new HashMap<Integer, String>();
     public static HashMap<String, Integer> keyNames = new HashMap<String, Integer>();
 
-    public static void initConversions() {
+    public static void init() {
         try {
             Field[] fields = Keyboard.class.getFields();
             for (Field field : fields) {

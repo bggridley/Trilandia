@@ -49,14 +49,14 @@ public class MenuState extends Container implements GameState {
 
     float m = 1;
 
-    public void update(int delta) {
+    public void update(float delta) {
         super.update();
 
         if(backgroundScrolling) {
             if (xOffset > 1920 - 1280) m = -1;
             else if (xOffset < 0) m = 1;
             if (delta < 10)
-                xOffset += (1f * delta) / 1000f * Main.UPS * m;
+                xOffset += m * delta; //(1f * delta) / 1000f * Main.UPS * m;
         }
     }
 

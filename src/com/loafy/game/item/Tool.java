@@ -37,7 +37,7 @@ public abstract class Tool extends Item {
         if (block.getMaterial() == Material.AIR)
             block = world.getWall(mx, my);
 
-        float digSpeed = getSpeed(block.getMaterial()) * (float) Main.UPS / (float) Main.FPS;
+        float digSpeed = getSpeed(block.getMaterial()); //* (float) Main.UPS / (float) Main.FPS;
 
         if (Math.abs(x - mx) / Material.SIZE <= 4) {
             if (Math.abs(y - my) / Material.SIZE <= 4) {

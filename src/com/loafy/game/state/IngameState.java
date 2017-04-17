@@ -23,10 +23,10 @@ public class IngameState extends Container implements GameState {
     private Texture darkheart = sprites.getTexture(4);
     private Texture stamina = sprites.getTexture(16);
     private World world;
-    private final int flashTime = 30 * (Main.FPS / Main.UPS);
-    private final int flashInterval = 6 * (Main.FPS / Main.UPS);
+    private final int flashTime = 30 ;//* (Main.FPS / Main.UPS);
+    private final int flashInterval = 6; //* (Main.FPS / Main.UPS);
     private int flash = 0;
-    private int curTime;
+    private float curTime;
     public boolean generated = false, loaded = false;
     public GuiPaused guiPaused;
     public GuiControls guiControls;
@@ -122,7 +122,7 @@ public class IngameState extends Container implements GameState {
         }).start();
     }
 
-    public void update(int delta) {
+    public void update(float delta) {
         super.update();
 
         if (world == null)
@@ -145,7 +145,7 @@ public class IngameState extends Container implements GameState {
             }
         }
 
-        flashHearts();
+        flashHearts(delta);
     }
 
     public void render() {
@@ -185,16 +185,16 @@ public class IngameState extends Container implements GameState {
         super.render();
     }
 
-    public void flashHearts() {
+    public void flashHearts(float delta) {
         EntityPlayer player = world.getPlayer();
         if (player.damaged) {
 
-            if (curTime % flashInterval == 0) {
+            if ((int)curTime % flashInterval == 0) {
                 if (flash == 0) flash = 1;
                 else flash = 0;
             }
 
-            curTime++;
+            curTime+=delta;
 
             if (curTime > flashTime) {
                 curTime = 0;

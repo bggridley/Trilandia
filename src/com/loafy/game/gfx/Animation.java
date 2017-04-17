@@ -51,7 +51,7 @@ public class Animation {
     }
 
     public void setInterval(int interval) {
-        this.interval = interval * ((float)Main.FPS / (float)Main.UPS);
+        this.interval = interval; //* ((float)Main.FPS / (float)Main.UPS);
     }
 
     public float getInterval() {
