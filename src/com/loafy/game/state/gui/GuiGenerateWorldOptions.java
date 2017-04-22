@@ -1,15 +1,17 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.gfx.Font;
-import com.loafy.game.state.GameState;
 
 import com.loafy.game.state.MenuState;
+import com.loafy.game.state.gui.objects.GuiButton;
+import com.loafy.game.state.gui.objects.GuiTextbox;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 
 public class GuiGenerateWorldOptions extends Gui {
 
     private GuiTextbox textBox;
+    private int worldSlot = -1;
 
     public GuiGenerateWorldOptions(final MenuState state, Gui parent) {
         super(state, parent, "World options");
@@ -19,16 +21,15 @@ public class GuiGenerateWorldOptions extends Gui {
 
             public void action() {
                 state.setCurrentGui(state.guiGeneratingWorld);
-                state.guiGeneratingWorld.generate(textBox.text);
+                state.guiGeneratingWorld.generate("world" + (getWorldSlot() + 1), textBox.text);
             }
 
         };
 
         addButton(generateWorld);
 
-        int maxWidth = 20;
-        textBox = new GuiTextbox(0, 200, 4, maxWidth);
-        textBox.setX((Display.getWidth() - Font.getWidth(maxWidth, 4)) / 2);
+        textBox = new GuiTextbox(0, 200, 2, 23);
+        textBox.setX((Display.getWidth() - 200f) / 2f);
     }
 
     public void update() {
@@ -40,7 +41,14 @@ public class GuiGenerateWorldOptions extends Gui {
         super.render();
         textBox.render();
 
-        Font.renderCenteredString("World name:", 200 - 32, 4, Color.black);
+        Font.renderCenteredString("World name:", 200 - 32, 2, Color.black);
     }
 
+    public int getWorldSlot() {
+        return worldSlot;
+    }
+
+    public void setWorldSlot(int worldSlot) {
+        this.worldSlot = worldSlot;
+    }
 }

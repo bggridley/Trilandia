@@ -1,5 +1,6 @@
 package com.loafy.game.world.block;
 
+import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.gfx.SpriteSheet;
 import com.loafy.game.gfx.Texture;
@@ -16,6 +17,8 @@ import java.util.List;
 import static com.loafy.game.world.block.MaterialType.*;
 
 public class Material {
+    
+    protected boolean passable;
     protected boolean solid;
     protected int id;
     protected float hardness;
@@ -30,24 +33,25 @@ public class Material {
     public static final int scale = 2;
     public static final int SIZE = size * scale;
 
-    public static Material DIRT_WALL = new Material(2 + 16, 0, false, WALL, "Dirt Wall");
-    public static Material STONE_WALL = new Material(1 + 16, 750, false, WALL, "Stone Wall");
+    public static Material DIRT_WALL = new Material(2 + 16, 85, true, true, WALL, "Dirt Wall");
+    public static Material STONE_WALL = new Material(1 + 16, 750, true, true, WALL, "Stone Wall");
     public static Material WOOD = new MaterialWood();
     public static Material LEAF = new MaterialLeaf();
 
     public static Material AIR = new MaterialAir();
     public static Material STONE = new MaterialStone();
-    public static Material DIRT = new Material(2, 85, true, BLOCK, "Dirt");
+    public static Material DIRT = new Material(2, 85, true, false, BLOCK, "Dirt");
     public static Material GRASS = new MaterialGrass();
 
-    public static Material CHEST = new Material(7, 750, true, WALL, "Chest");
+    public static Material CHEST = new MaterialChest();
 
-    public Material(int id, float hardness, boolean solid, MaterialType type, String name) {
+    public Material(int id, float hardness, boolean solid, boolean passable, MaterialType type, String name) {
         this.name = name;
         this.id = id;
         this.solid = solid;
         this.hardness = hardness;
         this.type = type;
+        this.passable = passable;
 
         sprites = Resources.blocksSprite;
         this.breakAnimation = new Animation("blocks.png", 2, 16, 16);
@@ -109,5 +113,13 @@ public class Material {
 
     public float getFriction() {
         return friction;
+    }
+
+    public boolean isPassable() {
+        return passable;
+    }
+
+    public boolean getPlaceConditions(World world, int blockX, int blockY) {
+        return true;
     }
 }

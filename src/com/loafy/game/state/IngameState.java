@@ -41,7 +41,7 @@ public class IngameState extends Container implements GameState {
     }
 
     // this is here because all world generation details must be passed to the world object
-    public void generateWorld(final String worldName, final int width, final int height) {
+    public void generateWorld(String fileName, final String worldName, final int width, final int height) {
         new Thread(new Runnable() {
 
             public void run() {
@@ -86,14 +86,14 @@ public class IngameState extends Container implements GameState {
                 for (int x = 0; x < chunks.length; x++) {
                     for (int y = 0; y < chunks[0].length; y++) {
                         Gson gson = new Gson();
-                        WorldLoader.saveChunk(worldName, chunks[x][y], gson);
+                        WorldLoader.saveChunk(fileName, chunks[x][y], gson); //todo make sure
                     }
                 }
 
 
-                world = new World(worldName, generator);
-                WorldLoader.save(world.getData(), worldName, "world.dat");
-                WorldLoader.save(world.getPlayer().getData(), worldName, "player.dat");
+                world = new World(fileName, worldName, generator);
+                WorldLoader.save(world.getData(), fileName, "world.dat");
+                WorldLoader.save(world.getPlayer().getData(), fileName, "player.dat");
                 generated = true;
 
                 Main.setState(GameState.INGAME);
@@ -103,7 +103,7 @@ public class IngameState extends Container implements GameState {
 
     }
 
-    public void loadWorld(final String worldName) {
+    public void loadWorld(final String fileName) {
         new Thread(new Runnable() {
 
             public void run() {
@@ -113,7 +113,7 @@ public class IngameState extends Container implements GameState {
                     e.printStackTrace();
                 }
 
-                world = new World((WorldData)WorldLoader.load(WorldData.class, worldName, "world.dat"), (PlayerData)WorldLoader.load(PlayerData.class, worldName, "player.dat")); // this is redundant but whatever l 0 l
+                world = new World(fileName, (WorldData)WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData)WorldLoader.load(PlayerData.class, fileName, "player.dat")); // this is redundant but whatever l 0 l
                 loaded = true;
 
                 Main.setState(GameState.INGAME);

@@ -1,5 +1,6 @@
 package com.loafy.game.world.block;
 
+import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.world.World;
 import org.newdawn.slick.geom.Rectangle;
@@ -45,6 +46,14 @@ public class Block {
 
             material.getSpriteSheet().getTexture(32 + state).render(x - xOffset, y - yOffset);
         }
+    }
+
+    public void clickLeft(EntityPlayer player) {
+
+    }
+
+    public void clickRight(EntityPlayer player) {
+
     }
 
     public List<ItemStack> dropItem() {

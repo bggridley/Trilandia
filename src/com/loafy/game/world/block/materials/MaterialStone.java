@@ -13,7 +13,7 @@ import java.util.Random;
 public class MaterialStone extends Material {
 
     public MaterialStone() {
-        super(1, 400, true, MaterialType.BLOCK, "Stone");
+        super(1, 400, true, false, MaterialType.BLOCK, "Stone");
     }
 
     public List<ItemStack> getDrops() {

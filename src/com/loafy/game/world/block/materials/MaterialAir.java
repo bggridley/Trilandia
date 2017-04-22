@@ -6,7 +6,7 @@ import com.loafy.game.world.block.MaterialType;
 public class MaterialAir extends Material {
 
     public MaterialAir() {
-        super(0, 0, false, MaterialType.BLOCK, "Air");
+        super(0, 0, false, true, MaterialType.BLOCK, "Air");
     }
 
     public String getName() {

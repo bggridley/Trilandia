@@ -1,14 +1,8 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.Main;
-import com.loafy.game.gfx.Font;
-import com.loafy.game.gfx.Texture;
-import com.loafy.game.resources.Resources;
 import com.loafy.game.state.GameState;
-import com.loafy.game.world.WorldLoader;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
+import com.loafy.game.state.gui.objects.GuiLoadingBar;
 
 public class GuiLoadingWorld extends Gui {
 

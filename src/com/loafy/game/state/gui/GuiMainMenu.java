@@ -3,6 +3,7 @@ package com.loafy.game.state.gui;
 import com.loafy.game.Main;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
+import com.loafy.game.state.gui.objects.GuiButton;
 import org.lwjgl.opengl.Display;
 
 public class GuiMainMenu extends Gui {
@@ -10,12 +11,13 @@ public class GuiMainMenu extends Gui {
     public GuiMainMenu(final MenuState state) {
         super(state, "");
 
-        float xOffset = 350;
+        float xOffset = 350; //todo make this y offset
         float space = 56;
 
         GuiButton play = new GuiButton("Play", xOffset + 0 * space) {
 
             public void action() {
+                super.action();
                state.setCurrentGui(state.guiPlay);
             }
         };
@@ -23,6 +25,7 @@ public class GuiMainMenu extends Gui {
         GuiButton audioSettings = new GuiButton("Audio Settings", xOffset + 1 * space) {
 
             public void action() {
+                super.action();
                 state.setCurrentGui(state.guiAudioSettings);
             }
         };
@@ -30,6 +33,7 @@ public class GuiMainMenu extends Gui {
         GuiButton videoSettings = new GuiButton("Video Settings", xOffset + 2 * space) {
 
             public void action() {
+                super.action();
                 state.setCurrentGui(state.guiVideoSettings);
             }
         };
@@ -37,6 +41,7 @@ public class GuiMainMenu extends Gui {
         GuiButton controls = new GuiButton("Controls", xOffset + 3 * space) {
 
             public void action() {
+                super.action();
                 state.setCurrentGui(state.guiControls);
             }
         };
@@ -44,6 +49,7 @@ public class GuiMainMenu extends Gui {
         GuiButton exit = new GuiButton("Exit", xOffset + 4 * space) {
 
             public void action() {
+                super.action();
                 Main.cleanUp();
             }
         };

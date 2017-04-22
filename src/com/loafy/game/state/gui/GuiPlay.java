@@ -1,37 +1,56 @@
 package com.loafy.game.state.gui;
 
-import com.loafy.game.state.GameState;
+import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
-import org.lwjgl.opengl.Display;
+import com.loafy.game.state.gui.objects.GuiWorldButton;
+import com.loafy.game.world.WorldLoader;
+import com.loafy.game.world.data.WorldData;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.HashMap;
 
 public class GuiPlay extends Gui {
+
+    private HashMap<String, WorldData> worlds = new HashMap<>(); //TODO init contructor
 
     public GuiPlay(final MenuState state, Gui parent) {
         super(state, parent, "Play");
 
-        float space = 56;
-        float yOffset = Display.getHeight() / 2 - (24) * 2;
+        String path = Resources.gameLocation + "/saves";
+        Resources.makeFile(path);
 
-        GuiButton loadWorld = new GuiButton("Load world", yOffset + 0 * space) {
-
-            public void action() {
-                state.setCurrentGui(state.guiSelectWorld);
+        File[] directories = new File(path).listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.isDirectory() && file.getName().startsWith("world") && !file.getPath().isEmpty();
             }
 
-        };
+        });
 
-        final GuiButton generateWorld = new GuiButton("Generate World", yOffset + 1 * space) {
+        if(directories == null)
+            return;
 
-          public void action() {
-              state.setCurrentGui(state.guiGenerateWorldOptions);
-              //state.setCurrentGui(state.guiGeneratingWorld);
-              //state.guiGeneratingWorld.generate();
-              //state.setCurrentGui(state.guiGenerateWorldOptions);
-          }
-        };
+        for (File file : directories) {
+            worlds.put(file.getName(), (WorldData) WorldLoader.load(WorldData.class, file.getName(), "world.dat"));
+        }
 
+        for(int i = 0; i < 5; i++) {
+            String directoryName = "world" + (i + 1);
+            WorldData data = null;
+            if(worlds.containsKey(directoryName)) {
+                data = worlds.get(directoryName);
+            }
 
-        addButton(generateWorld);
-        addButton(loadWorld);
+            GuiWorldButton worldButton = new GuiWorldButton(state, data, i, 200 + (i * 75)) {
+
+                public void action() {
+
+                }
+
+            };
+
+            addButton(worldButton);
+        }
     }
 }

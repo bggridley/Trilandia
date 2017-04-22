@@ -84,4 +84,8 @@ public class InputManager {
             }
         }
     }
+
+    public static boolean mouseInBounds(float x, float y, float width, float height) {
+        return (InputManager.mouseX > x && InputManager.mouseX < x + width && InputManager.mouseY > y && InputManager.mouseY < y + height);
+    }
 }

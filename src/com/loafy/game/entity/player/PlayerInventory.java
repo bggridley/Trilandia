@@ -25,7 +25,7 @@ public class PlayerInventory extends Inventory {
         this.slots[0].setItemStack(new ItemStack(new WoodenAxe(), 1));
         this.slots[1].setItemStack(new ItemStack(new WoodenPickaxe(), 1));
         this.slots[2].setItemStack(new ItemStack(new WoodenShovel(), 1));
-        this.slots[3].setItemStack(new ItemStack(new ItemBlock(Material.CHEST), 1));
+        this.slots[3].setItemStack(new ItemStack(new ItemBlock(Material.CHEST), 15));
     }
 
     public void update(EntityPlayer player) {

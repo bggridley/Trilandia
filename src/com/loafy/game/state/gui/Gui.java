@@ -4,14 +4,12 @@ import com.loafy.game.Main;
 import com.loafy.game.gfx.Font;
 import com.loafy.game.state.GameState;
 import com.loafy.game.state.IngameState;
-import org.lwjgl.input.Mouse;
+import com.loafy.game.state.gui.objects.GuiButton;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Gui {
 
@@ -31,6 +29,7 @@ public class Gui {
         GuiButton back = new GuiButton("Back", 350 + (56 * 4)) {
 
             public void action() {
+                super.action();
                 state.setCurrentGui(parent);
                 exit();
             }
@@ -58,7 +57,7 @@ public class Gui {
         }
 
         if(title != null)
-        Font.renderCenteredString(title, 42, 8f, Color.white);
+        Font.renderCenteredString(title, 42, 6f, Color.white);
     }
 
     public void update() {

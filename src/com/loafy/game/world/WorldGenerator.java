@@ -1,12 +1,10 @@
 package com.loafy.game.world;
 
 import com.loafy.game.Main;
-import com.loafy.game.state.IngameState;
 import com.loafy.game.state.MenuState;
-import com.loafy.game.state.gui.GuiLoadingBar;
+import com.loafy.game.state.gui.objects.GuiLoadingBar;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
-import org.newdawn.slick.geom.Line;
 import util.LineSmoother;
 
 import java.awt.*;
@@ -275,16 +273,21 @@ public class WorldGenerator {
             lastTree = x;
             for (int i = 0; i < treeHeight; i++) {
                 int yy = y - i - 1;
-                this.walls[x][yy] = new Block(Material.WOOD, x * Material.SIZE, yy * Material.SIZE);  //TODO Check is out bounds
+                this.blocks[x][yy] = new Block(Material.WOOD, x * Material.SIZE, yy * Material.SIZE);  //TODO Check is out bounds
             }
 
             int startY = y - treeHeight;
 
-            for (int xx = -1; xx < 2; xx++) {
-                for (int yy = -1; yy < 2; yy++) {
 
-                    if (!(x + xx < 3 || x + xx > walls.length - 3 || startY + yy < 3 || startY + yy > walls[0].length - 3)) {
-                        this.walls[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
+                for (int yy = -1; yy < 2; yy++) {
+                    for (int xx = -1; xx < 2; xx++) {
+
+                    if (!(x + xx < 5 && x + xx > blocks.length - 5 && startY + yy < 3 && startY + yy > blocks[0].length - 3)) {
+                        blocks[x + xx + 4][startY + yy].setMaterial(Material.LEAF);
+                        if(xx == 1) {
+                            System.out.println("set leaf for " + (x + xx));
+                        }
+                        //setBlock(Material.LEAF, x + xx, startY + yy); //this.blocks[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
                     }
                 }
             }
@@ -340,7 +343,6 @@ public class WorldGenerator {
                     for (int i = 0; i < dirtAmount; i++) {
                         blocks[x][y + i].setMaterial(Material.DIRT);
                         walls[x][y + i + 2].setMaterial(Material.DIRT_WALL);
-                        System.out.println("setting a wall. wtf");
                     }
 
                     break;
@@ -400,7 +402,7 @@ public class WorldGenerator {
     public void setBlock(Material material, int x, int y) {
         if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
             return;
-        blocks[x][y] = new Block(material, x, y);
+        blocks[x][y] = new Block(material, x * Material.SIZE, y * Material.SIZE);
     }
 
     public Block getBlock(int x, int y) { // TODO put these other places so everything can access them

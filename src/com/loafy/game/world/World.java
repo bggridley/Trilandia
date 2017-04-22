@@ -5,6 +5,8 @@ import com.loafy.game.entity.Entity;
 import com.loafy.game.entity.EntityGoat;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Texture;
+import com.loafy.game.input.InputManager;
+import com.loafy.game.item.container.ContainerSlot;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
@@ -34,6 +36,7 @@ public class World {
     public Texture background;
 
     public String name;
+    public String fileName;
 
     private int width, height;
 
@@ -48,9 +51,10 @@ public class World {
      * Apply all properties from worldgenerator to current world
      */
 
-    public World(String name, WorldGenerator generator) {
+    public World(String fileName, String name, WorldGenerator generator) {
         initLists();
         this.name = name;
+        this.fileName = fileName;
 
         this.width = generator.width;
         this.height = generator.height;
@@ -65,9 +69,10 @@ public class World {
     }
 
     // add more data in constructor to find player spawn location and shit lol
-    public World(WorldData worldData, PlayerData playerData) {
+    public World(String fileName, WorldData worldData, PlayerData playerData) {
         initLists();
         this.name = worldData.name;
+        this.fileName = fileName;
 
         this.width = worldData.width;
         this.height = worldData.height;
@@ -129,10 +134,7 @@ public class World {
         //this.byOffset = (Display.getHeight() - background.getHeight()) / 2;
     }
 
-    boolean rendering = false;
-
     public void render() {
-        rendering = true;
         background.render(0 - bxOffset, 0 - byOffset);
         for (Chunk chunk : activeChunks) {
             for (int x = 0; x < chunk.getBlocks().length; x++) {
@@ -153,7 +155,7 @@ public class World {
             entity.render(xOffset, yOffset);
         }
 
-        rendering = false;
+        player.renderContainer();
     }
 
     public void update(float delta) {
@@ -187,7 +189,7 @@ public class World {
         if (getChunk(chunkX, chunkY) != null) return;
 
         if (chunkX >= 0 && chunkY >= 0 && chunkX < width / Chunk.SIZE && chunkY < height / Chunk.SIZE) {
-            Chunk chunk = WorldLoader.fetchChunk(name, chunkX, chunkY);
+            Chunk chunk = WorldLoader.fetchChunk(fileName, chunkX, chunkY);
             activeChunks.add(chunk);
         }
     }
@@ -201,7 +203,7 @@ public class World {
         while (it.hasNext()) {
             Chunk chunk = it.next();
             if ((Math.abs(chunkX - chunk.getChunkX()) >= 4) || Math.abs(chunkY - chunk.getChunkY()) >= 3) {
-                WorldLoader.saveChunk(name, chunk, gson);
+                WorldLoader.saveChunk(fileName, chunk, gson);
                 it.remove();
                 System.out.println("unloading/saving chunk " + chunk.getChunkX() + ", " + chunk.getChunkY() + "... active chunks: " + activeChunks.size());
             }
@@ -213,7 +215,7 @@ public class World {
         Gson gson = new Gson();
 
         for(Chunk chunk : activeChunks) {
-            WorldLoader.saveChunk(name, chunk, gson);
+            WorldLoader.saveChunk(fileName, chunk, gson);
         }
 
         this.activeChunks.clear();
@@ -283,7 +285,7 @@ public class World {
 
     public Block createBlock(int id, float x, float y) {
         if (id == Material.CHEST.getID())
-            return new BlockChest(x, y);
+            return new BlockChest(x, y); //todo make every block into a class instaed of containing it in the thing XD
 
         return new Block(Materials.getID(id), x, y);
     }

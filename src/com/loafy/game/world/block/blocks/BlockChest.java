@@ -18,6 +18,11 @@ public class BlockChest extends Block {
         container = new Container(60, 60, Container.getDefaultX(), inventoryHeight);
     }
 
+    public void clickRight(EntityPlayer player) {
+        player.openInventory();
+        player.setActiveContainer(getContainer());
+    }
+
     public Container getContainer() {
         return container;
     }

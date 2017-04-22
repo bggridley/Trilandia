@@ -12,7 +12,7 @@ import java.util.Random;
 public class MaterialLeaf extends Material {
 
     public MaterialLeaf() {
-        super(5, 45, true, MaterialType.WALL, "Leaf");
+        super(5, 45, true, true, MaterialType.WALL, "Leaf");
     }
 
     public List<ItemStack> getDrops() {

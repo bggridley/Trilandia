@@ -13,16 +13,15 @@ import java.io.FileInputStream;
 
 public class Resources {
 
-    public static Texture inventoryTexture;
     public static Texture backgroundTexture;
-    public static Texture buttonTexture;
-    public static Texture buttonSelectedTexture;
-    public static Texture wbuttonTexture;
-    public static Texture wbuttonSelectedTexture;
-    public static Texture scrollbar;
-    public static Texture loading;
     public static Texture mainLogo;
-    public static Texture textBox;
+
+    public static Texture buttonTexture;
+    public static Texture wbuttonTexture;
+    public static Texture inventoryTexture;
+    public static Texture play;
+    public static Texture pencil;
+    public static Texture trashcan;
 
     public static Animation playerAnimation;
     public static Animation goatAnimation;
@@ -57,16 +56,17 @@ public class Resources {
     }
 
     public static void loadImages() {
-        inventoryTexture = Texture.loadTexture(Texture.loadBi("gui/inventorySlot.png", 2));
-        backgroundTexture = Texture.loadTexture(Texture.loadBi("background3.png", 1));
-        buttonTexture = Texture.loadTexture(Texture.loadBi("gui/button.png", 2));
-        buttonSelectedTexture = Texture.loadTexture(Texture.loadBi("gui/buttonSelected.png", 2));
-        wbuttonTexture = Texture.loadTexture(Texture.loadBi("gui/wbutton.png", 2));
-        wbuttonSelectedTexture = Texture.loadTexture(Texture.loadBi("gui/wbuttonSelected.png", 2));
-        loading = Texture.loadTexture(Texture.loadBi("gui/loading.png", 2));
+        TextureAtlas gui = new TextureAtlas(Texture.loadBi("gui/gui.png", 1));
+        backgroundTexture = Texture.loadTexture(Texture.loadBi("gui/background3.png", 1));
         mainLogo = Texture.loadTexture(Texture.loadBi("gui/logo.png", 2));
-        textBox = Texture.loadTexture(Texture.loadBi("gui/textbox.png", 2));
-        scrollbar = Texture.loadTexture(Texture.loadBi("gui/scrollbar.png", 2));
+
+        wbuttonTexture = gui.getTexture(0, 0, 240, 32, 2);
+        buttonTexture = gui.getTexture(0, 32, 128, 24, 2);
+
+        inventoryTexture = gui.getTexture(0, 80, 22, 22, 2);
+        play = gui.getTexture(0, 56, 24, 24, 2);
+        pencil = gui.getTexture(24, 56, 24, 24, 2);
+        trashcan = gui.getTexture(48, 56, 24, 24, 2);
     }
 
     public static void loadAnimations() {

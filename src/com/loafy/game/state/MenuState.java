@@ -61,8 +61,7 @@ public class MenuState extends Container implements GameState {
     }
 
     public void render() {
-        if(backgroundScrolling)
-        background.render(-xOffset, -yOffset);
+            background.render(0, 0);
 
         super.render();
     }

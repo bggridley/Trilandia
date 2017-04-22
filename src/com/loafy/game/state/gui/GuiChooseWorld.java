@@ -5,12 +5,11 @@ import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Texture;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
-import com.loafy.game.world.block.Block;
+import com.loafy.game.state.gui.objects.GuiButton;
+import com.loafy.game.state.gui.objects.GuiWorldButton;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.data.WorldData;
 import com.loafy.game.world.WorldLoader;
-import com.loafy.game.gfx.Graphics;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
 
@@ -23,8 +22,6 @@ import java.util.List;
 public class GuiChooseWorld extends Gui {
 
     private HashMap<String, WorldData> worlds = new HashMap<>();
-
-    private GuiScrollBar scrollBar;
 
     private float startX;
     private float startY;
@@ -46,17 +43,15 @@ public class GuiChooseWorld extends Gui {
 
 
         float border = 20f;
-
-        scrollBar = new GuiScrollBar(startX - border + width, startY + border, startY - border + height, 1000);
-
         String path = Resources.gameLocation + "/saves";
+        Resources.makeFile(path);
 
         File[] directories = new File(path).listFiles(new FileFilter() {
-
             @Override
             public boolean accept(File file) {
-                return file.isDirectory();
+                return file.isDirectory() && file.getName().startsWith("world");
             }
+
         });
 
         if(directories == null)
@@ -73,7 +68,7 @@ public class GuiChooseWorld extends Gui {
             final String worldName = keyList.get(i);
             WorldData data = worlds.get(worldName);
 
-            GuiWorldButton button = new GuiWorldButton(worldName, startX + i * (Resources.wbuttonTexture.getHeight() + 8)) {
+            GuiWorldButton button = new GuiWorldButton(state, data, 0, startX + i * (Resources.wbuttonTexture.getHeight() + 8)) {
 
                 public void action() {
                     state.setCurrentGui(state.guiLoadingWorld);
@@ -109,8 +104,6 @@ public class GuiChooseWorld extends Gui {
             if(!(button instanceof GuiWorldButton))
                 button.render();
         }
-
-        scrollBar.render();
         //
     }
 
@@ -135,14 +128,14 @@ public class GuiChooseWorld extends Gui {
             button.update();
         }
 
-        scrollBar.update();
+        //scrollBar.update();
         for (int i = 0; i < getButtons().size(); i++) {
             GuiButton button = getButtons().get(i);
 
             if (button instanceof GuiWorldButton) {
                 GuiWorldButton worldButton = (GuiWorldButton) button;
 
-                worldButton.setY(startY + i * (Resources.wbuttonTexture.getHeight() + 8) + scrollBar.getOffset());
+                //worldButton.setY(startY + i * (Resources.wbuttonTexture.getHeight() + 8) + scrollBar.getOffset());
             }
         }
     }

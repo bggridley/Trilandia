@@ -1,14 +1,8 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.Main;
-import com.loafy.game.gfx.Font;
-import com.loafy.game.gfx.Texture;
-import com.loafy.game.resources.Resources;
 import com.loafy.game.state.GameState;
-import com.loafy.game.state.MenuState;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
+import com.loafy.game.state.gui.objects.GuiLoadingBar;
 
 public class GuiGeneratingWorld extends Gui {
 
@@ -19,8 +13,8 @@ public class GuiGeneratingWorld extends Gui {
         this.loadingBar = new GuiLoadingBar(364, "Generating World.", 20);
     }
 
-    public void generate(String worldName) {
-        Main.ingameState.generateWorld(worldName, 2000, 992);
+    public void generate(String fileName, String worldName) {
+        Main.ingameState.generateWorld(fileName, worldName, 2000, 992);
     }
 
     public void update() {

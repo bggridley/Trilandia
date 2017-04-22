@@ -4,6 +4,7 @@ import com.loafy.game.entity.EntityItem;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.SpriteSheet;
 import com.loafy.game.gfx.Texture;
+import com.loafy.game.input.InputManager;
 import com.loafy.game.item.material.ItemPlantFiber;
 import com.loafy.game.item.material.ItemWood;
 import com.loafy.game.item.tool.*;
@@ -51,12 +52,18 @@ public class Item {
         getTexture().render(x, y, scale, flip);
     }
 
-    public void useLeft(EntityPlayer player) {
+    public void useLeft(EntityPlayer player, float delta) { // todo
+        int mx = (int) (InputManager.mouseX + player.getWorld().xOffset);
+        int my = (int) (InputManager.mouseY + player.getWorld().yOffset);
 
+        player.getWorld().getBlock(mx, my).clickLeft(player);
     }
 
-    public void useRight(EntityPlayer player) {
+    public void useRight(EntityPlayer player, float delta) {
+        int mx = (int) (InputManager.mouseX + player.getWorld().xOffset);
+        int my = (int) (InputManager.mouseY + player.getWorld().yOffset);
 
+        player.getWorld().getBlock(mx, my).clickRight(player);
     }
 
     public String getName() {

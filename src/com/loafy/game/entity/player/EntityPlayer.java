@@ -18,12 +18,16 @@ import com.loafy.game.world.block.Block;
 import com.loafy.game.world.Chunk;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.World;
+import com.loafy.game.world.block.MaterialType;
 import com.loafy.game.world.block.blocks.BlockChest;
 import com.loafy.game.world.data.PlayerData;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.geom.Rectangle;
+
+import java.util.ArrayList;
+import java.util.concurrent.locks.Condition;
 
 
 public class EntityPlayer extends EntityLiving {
@@ -61,7 +65,7 @@ public class EntityPlayer extends EntityLiving {
 
         this.width = animation.getFrame().getWidth();
         this.height = animation.getFrame().getHeight();
-        this.speed = 4F;
+        this.speed = 5F;
 
         this.maxHealth = 100F;
         this.health = maxHealth;
@@ -91,8 +95,8 @@ public class EntityPlayer extends EntityLiving {
     }
 
     public void update(float delta) {
-        controller.update();
-        handleAnimations();
+        controller.update(delta);
+        handleAnimations(delta);
 
         inventory.update(this);
         if (activeContainer != null) {
@@ -123,16 +127,18 @@ public class EntityPlayer extends EntityLiving {
         super.update(delta);
     }
 
-    public void render(float xOffset, float yOffset) {
-        inventory.render();
-
+    public void renderContainer() {
         if (activeContainer != null && inventory.isOpen()) {
-            activeContainer.render();
+            activeContainer.render(this);
         }
 
+        inventory.render(this);
         if (selectedItem != null) {
             inventory.renderItemStack(selectedItem, InputManager.mouseX - ContainerSlot.SIZE / 2 - 16f, InputManager.mouseY - ContainerSlot.SIZE / 2);
         }
+    }
+
+    public void render(float xOffset, float yOffset) {
 
         ItemStack itemstack = inventory.getSlots()[inventory.getHotbarSlot()].getItemStack();
 
@@ -148,7 +154,7 @@ public class EntityPlayer extends EntityLiving {
                 int blockX = world.getBlockX(mx);
                 int blockY = world.getBlockY(my);
 
-                if (canPlace(mx, my))
+                if (canPlace(((ItemBlock) item).getMaterial(), mx, my))
                     Resources.blocksSprite.getTexture(48).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
                 else
                     Resources.blocksSprite.getTexture(49).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
@@ -167,7 +173,7 @@ public class EntityPlayer extends EntityLiving {
         int mx = (int) (Mouse.getX() + world.xOffset);
         int my = (int) (Display.getHeight() - Mouse.getY() + world.yOffset);
 
-        if (!canPlace(mx, my))
+        if (!canPlace(material, mx, my))
             return;
 
         Block block = world.createBlock(material, world.getBlockX(mx) * Material.SIZE, world.getBlockY(my) * Material.SIZE);
@@ -191,18 +197,31 @@ public class EntityPlayer extends EntityLiving {
         }
     }
 
-    public boolean canPlace(int mx, int my) {
+    public boolean canPlace(Material m, int mx, int my) {
         int blockX = world.getBlockX(mx) * Material.SIZE;
         int blockY = world.getBlockY(my) * Material.SIZE;
 
         Block block = world.getBlock(blockX, blockY);
+        Block wall = world.getWall(blockX, blockY);
 
-        if (block.getMaterial() != Material.AIR) return false;
+        boolean conditions = m.getPlaceConditions(world, blockX, blockY);
 
-        for (Entity entity : getWorld().getEntities()) {
-            if (entity instanceof EntityLiving) {
-                if (new Rectangle(block.getX(), block.getY(), Material.SIZE, Material.SIZE).intersects(entity.box)) {
-                    return false;
+        if(m.getType() == MaterialType.BLOCK) {
+            if(block.getMaterial() != Material.AIR) return false;
+        } else if (m.getType() == MaterialType.WALL) {
+            if(wall.getMaterial() != Material.AIR) return false;
+        }
+
+        if(!conditions) {
+            return false;
+        }
+
+        if(!m.isPassable()) {
+            for (Entity entity : getWorld().getEntities()) {
+                if (entity instanceof EntityLiving) {
+                    if (new Rectangle(block.getX(), block.getY(), Material.SIZE, Material.SIZE).intersects(entity.box)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -254,7 +273,7 @@ public class EntityPlayer extends EntityLiving {
         }
     }
 
-    public void handleAnimations() {
+    public void handleAnimations(float delta) {
         int add = 0;
 
         //ContainerSlot selected = inventory.getSelected();
@@ -322,5 +341,17 @@ public class EntityPlayer extends EntityLiving {
 
     public PlayerData getData() {
         return new PlayerData(this);
+    }
+
+    public abstract class PlaceCondition {
+
+        private boolean condition;
+
+        public abstract void update(EntityPlayer player);
+
+        public boolean getCondition() {
+            return condition;
+        }
+
     }
 }

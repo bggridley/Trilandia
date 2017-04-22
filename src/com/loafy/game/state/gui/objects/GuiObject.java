@@ -1,4 +1,4 @@
-package com.loafy.game.state.gui;
+package com.loafy.game.state.gui.objects;
 
 public class GuiObject {
 

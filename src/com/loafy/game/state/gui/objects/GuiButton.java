@@ -1,31 +1,38 @@
-package com.loafy.game.state.gui;
+package com.loafy.game.state.gui.objects;
 
-import com.loafy.game.Main;
 import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Texture;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.resources.Resources;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
-import org.newdawn.slick.Input;
 
 public class GuiButton extends GuiObject {
 
     protected Texture buttonTexture;
-    protected Texture buttonSelectedTexture;
-
     public String text;
-
     public boolean selected;
-
     protected float width, height;
+
+    private Color color = new Color (235, 235, 255);
+
+    public GuiButton(Texture buttonTexture, float x, float y) {
+        super(x, y);
+        this.buttonTexture = buttonTexture;
+        init();
+    }
+
+    public GuiButton(Texture buttonTexture, float y) {
+        this(buttonTexture, 0, y);
+        this.buttonTexture = buttonTexture;
+        init();
+        x = (Display.getWidth() - width) / 2;
+    }
 
     public GuiButton(String text, float x, float y) {
         super(x, y);
         this.text = text;
         this.buttonTexture = Resources.buttonTexture;
-        this.buttonSelectedTexture = Resources.buttonSelectedTexture;
         init();
     }
 
@@ -42,20 +49,21 @@ public class GuiButton extends GuiObject {
     }
 
     public void action() {
-
+        selected = false;
     }
 
     public void render() {
         if (!selected) {
             buttonTexture.render(x, y);
         } else {
-            buttonSelectedTexture.render(x, y);
+            buttonTexture.render(x, y, 1f, false, color);
         }
 
-        int size = 4;
-        float width = Font.getWidth(text, size);
+        if (text != null) {
+            float size = 2f;
 
-        Font.renderString(text, (x + (this.width - width) / 2) + 2, y + 12, size, Color.black);
+            Font.renderCenteredString(text, y + 14f , size, Color.black);
+        }
     }
 
     public void update() {
@@ -75,6 +83,11 @@ public class GuiButton extends GuiObject {
                 action();
         }
     }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
 
     public boolean isSelected() {
         return selected;

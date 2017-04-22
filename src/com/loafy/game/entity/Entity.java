@@ -15,9 +15,9 @@ public class Entity {
 
     // CONSTANTS
 
-    public final float GRAVITY = 0.6F;
+    public final float GRAVITY = 0.65F;
     public final float VELOCITY_DECREASE = 0.35F;
-    public float MAX_FALLING_SPEED = 9F;
+    public float MAX_FALLING_SPEED = 12.5F;
     public float JUMP_START;
 
     public int PADDING_LEFT;
@@ -154,12 +154,12 @@ public class Entity {
         int bottomTile = (int) y + (int) width;
 
         try {
-            topLeft = world.getBlock(leftTile, topTile).getMaterial().isSolid();
-            topRight = world.getBlock(rightTile, topTile).getMaterial().isSolid();
-            midLeft = world.getBlock(leftTile, midTile).getMaterial().isSolid();
-            midRight = world.getBlock(rightTile, midTile).getMaterial().isSolid();
-            bottomLeft = world.getBlock(leftTile, bottomTile).getMaterial().isSolid();
-            bottomRight = world.getBlock(rightTile, bottomTile).getMaterial().isSolid();
+            topLeft = !world.getBlock(leftTile, topTile).getMaterial().isPassable();
+            topRight = !world.getBlock(rightTile, topTile).getMaterial().isPassable();
+            midLeft = !world.getBlock(leftTile, midTile).getMaterial().isPassable();
+            midRight = !world.getBlock(rightTile, midTile).getMaterial().isPassable();
+            bottomLeft = !world.getBlock(leftTile, bottomTile).getMaterial().isPassable();
+            bottomRight = !world.getBlock(rightTile, bottomTile).getMaterial().isPassable();
 
             Block bottomLeftBlock = world.getBlock(leftTile, bottomTile);
             Block bottomRightBlock = world.getBlock(rightTile, bottomTile);

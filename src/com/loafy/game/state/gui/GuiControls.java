@@ -3,9 +3,7 @@ package com.loafy.game.state.gui;
 import com.loafy.game.input.Controls;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.state.GameState;
-import com.loafy.game.state.MenuState;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import com.loafy.game.state.gui.objects.GuiButton;
 import util.KeyConversions;
 
 import java.util.ArrayList;
@@ -30,6 +28,7 @@ public class GuiControls extends Gui {
             ControlButton button = new ControlButton(string + ":" + KeyConversions.getKeyName(Controls.getControls().get(string)), yOffset + index * space) {
 
                 public void action() {
+                    super.action();
                     for (ControlButton button : cButtons) {
                         button.setChangeKey(false);
                         button.setDefault();

@@ -35,7 +35,7 @@ public class Main {
     public static int scale = 2;
 
     //this means fps can change but will still update the same
-    public static int FPS = 15; // PREFERRED FPS
+    public static int FPS = 30; // PREFERRED FPS
     public static float constantInterval = 1000 / 30; // CONSTANT TICK XD
 
     public static int delta;
@@ -76,10 +76,9 @@ public class Main {
 
                 delta = getDelta();
 
-                if(getState() != null)
+                if (getState() != null)
                     getState().update(delta / constantInterval);
 
-                System.out.println(delta / constantInterval);
                 Display.makeCurrent();
                 getState().render();
                 InputManager.update();
@@ -99,6 +98,9 @@ public class Main {
             e.printStackTrace();
         }
 
+        if (state == GameState.INGAME) {
+            ingameState.getWorld().unload();
+        }
         cleanUp();
     }
 

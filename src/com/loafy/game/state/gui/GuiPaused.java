@@ -3,6 +3,8 @@ package com.loafy.game.state.gui;
 import com.loafy.game.Main;
 import com.loafy.game.state.GameState;
 import com.loafy.game.state.IngameState;
+import com.loafy.game.state.MenuState;
+import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.world.World;
 import com.loafy.game.world.WorldLoader;
 
@@ -45,16 +47,15 @@ public class GuiPaused extends Gui {
         GuiButton exit = new GuiButton("Save and exit", xOffset + 4 * space) {
 
             public void action() {
+                Main.menuState = new MenuState();
                 Main.setState(GameState.MENU);
                 Main.menuState.setCurrentGui(Main.menuState.guiMainMenu);
-                state.setCurrentGui(null);
 
                 World world = state.getWorld();
-                WorldLoader.save(world.getData(), world.getName(), "world.dat");
+                WorldLoader.save(world.getData(), world.fileName, "world.dat");
                 state.getWorld().unload();
 
-                state.generated = false;
-                state.loaded = false;
+                Main.ingameState = new IngameState();
             }
         };
 

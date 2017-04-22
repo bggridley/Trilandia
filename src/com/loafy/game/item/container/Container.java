@@ -9,6 +9,7 @@ import com.loafy.game.item.Item;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.gui.Gui;
+import com.loafy.game.world.block.Material;
 import org.newdawn.slick.Color;
 
 public class Container {
@@ -58,19 +59,34 @@ public class Container {
         updateSelected();
     }
 
-    public void render() {
-        for (ContainerSlot slot : slots) {
+    public void render(EntityPlayer player) {
+        for (int i = 0; i < slots.length; i++) {
+            ContainerSlot slot = slots[i];
             if (!slot.isActive()) continue;
             float x = startX + slot.getX();
             float y = startY + slot.getY();
 
             if (!slot.isSelected())
                 slotTexture.render(x, y);
-            else
+            else {
                 slotTexture.render(x, y, 1f, false, Color.pink);
+            }
 
             if (slot.getItemStack() != null)
                 renderItemStack(slot.getItemStack(), x, y);
+
+        }
+
+        if (mouseSelected != -1) {
+            ContainerSlot slot = slots[mouseSelected];
+            Item item = slot.getItemStack().getItem();
+
+            if(player.getSelectedItem() != null) {
+                item = player.getSelectedItem().getItem();
+            }
+
+            if (slot.getItemStack().getItem() != null)
+                Font.renderString(item.getName(), InputManager.mouseX + 6f, InputManager.mouseY, 2f, Color.white);
         }
     }
 
@@ -81,7 +97,7 @@ public class Container {
     public void renderItemStack(ItemStack stack, float x, float y) {
         stack.renderInContainer(x, y);
         if (stack.getItem().getMaxStackSize() == 1 || stack.getItem().getID() != -1)
-            Font.renderString(String.valueOf(stack.getAmount()), x + ContainerSlot.SIZE - 36f, y + 16f, 4, Color.white);
+            Font.renderString(String.valueOf(stack.getAmount()), x + ContainerSlot.SIZE - 36f, y + 16f, 2f, Color.white);
     }
 
     public void updateInput(EntityPlayer player) {
@@ -160,7 +176,7 @@ public class Container {
 
             slot.setSelected(false);
             if (!slot.isActive()) continue;
-            if (InputManager.mouseX > startX + slot.getX() && InputManager.mouseX < startX + slot.getX() + ContainerSlot.SIZE && InputManager.mouseY > startY + slot.getY() && InputManager.mouseY < startY + slot.getY() + ContainerSlot.SIZE) {
+            if (InputManager.mouseInBounds(startX + slot.getX(), startY + slot.getY(), ContainerSlot.SIZE, ContainerSlot.SIZE)) {
                 slot.setSelected(true);
 
                 mouseSelected = i;

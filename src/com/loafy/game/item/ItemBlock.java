@@ -30,7 +30,8 @@ public class ItemBlock extends Item {
         return material.getName();
     }
 
-    public void useLeft(EntityPlayer player) {
+    public void useLeft(EntityPlayer player, float delta) {
+        super.useLeft(player, delta);
         player.placeBlock(this, material);
     }
 
@@ -42,4 +43,9 @@ public class ItemBlock extends Item {
         getTexture().render(x, y, scale, flip);
         texture.render(x, y, scale, false);
     }
+
+    public Material getMaterial() {
+        return material;
+    }
+
 }

@@ -25,7 +25,7 @@ public class PlayerController {
         this.world = player.getWorld();
     }
 
-    public void update() {
+    public void update(float delta) {
         int leftk = Controls.getControls().get("left");
         int rightk = Controls.getControls().get("right");
         player.left = Keyboard.isKeyDown(leftk);
@@ -38,19 +38,23 @@ public class PlayerController {
             player.toggleInventory();
         }
 
-        handleItemActions();
+        handleItemActions(delta);
     }
 
     /**
      * Handle mouse actions on the selected item.
      */
-    public void handleItemActions() {
+    public void handleItemActions(float delta) {
         PlayerInventory inventory = player.getInventory();
         World world = player.getWorld();
         ItemStack itemstack = inventory.getSlots()[inventory.getHotbarSlot()].getItemStack();
         if (InputManager.mouse1) {
-            itemstack.getItem().useLeft(player);
+            itemstack.getItem().useLeft(player, delta);
         } else if (InputManager.mouse2p) {
+            itemstack.getItem().useRight(player, delta);
+
+
+            /*
             int mx = (int) (InputManager.mouseX + world.xOffset);
             int my = (int) (InputManager.mouseY + world.yOffset);
 
@@ -60,10 +64,13 @@ public class PlayerController {
                 BlockChest chest = (BlockChest) block;
 
                 player.openInventory();
-                player.setActiveContainer(chest.getContainer());
+                player.setActiveContainer(chest.getContainer()); // good
             } else {
                 itemstack.getItem().useRight(player);
             }
+
+
+            */
         }
 
         clearBlockDamage();

@@ -23,7 +23,12 @@ public abstract class Tool extends Item {
         this.maxStackSize = 1;
     }
 
-    public void useLeft(EntityPlayer player) {
+    public void useRight(EntityPlayer player, float delta) {
+        super.useRight(player, delta);
+    }
+
+    public void useLeft(EntityPlayer player, float delta) {
+        super.useLeft(player, delta);
         World world = player.getWorld();
 
         float x = player.getX();
@@ -37,7 +42,8 @@ public abstract class Tool extends Item {
         if (block.getMaterial() == Material.AIR)
             block = world.getWall(mx, my);
 
-        float digSpeed = getSpeed(block.getMaterial()); //* (float) Main.UPS / (float) Main.FPS;
+        float digSpeed = getSpeed(block.getMaterial()) * delta; //* (float) Main.UPS / (float) Main.FPS;
+
 
         if (Math.abs(x - mx) / Material.SIZE <= 4) {
             if (Math.abs(y - my) / Material.SIZE <= 4) {
@@ -45,7 +51,6 @@ public abstract class Tool extends Item {
 
                 if (block.getMaterial().isSolid()) {
                     block.setHardness(block.getHardness() - digSpeed);
-
                     if (block.getHardness() <= 0) {
                         block.destroy(world);
                     }
