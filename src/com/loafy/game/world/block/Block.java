@@ -3,6 +3,7 @@ package com.loafy.game.world.block;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.world.World;
+import com.loafy.game.world.lighting.Light;
 import org.newdawn.slick.geom.Rectangle;
 
 import java.io.Serializable;
@@ -32,8 +33,13 @@ public class Block {
         this.box = new Rectangle(x, y, Material.SIZE, Material.SIZE);
     }
 
-    public void render(float xOffset, float yOffset) {
-        material.render(x - xOffset, y - yOffset);
+    public void render(float xOffset, float yOffset, float renderLight) {
+       /* float renderLight = light;
+        if(renderLight <= 0.03f) {
+            renderLight = 0.03f;
+        }*/
+
+        material.render(x - xOffset, y - yOffset, renderLight);
         if (hardness != maxHardness) {
 
             float space = maxHardness / 7;
@@ -74,7 +80,22 @@ public class Block {
 
     public void destroy(World world) {
         material.destroy(world, this.getX(), this.getY());
+
+        int x = (int) this.getX() / Material.SIZE;
+        int y = (int) this.getY() / Material.SIZE;
+
+        float light = material.getLight();
+
+        if(light != -1) {
+            world.getLightMap().removeLightAt(x, y);
+        }
+
         destroyClear(world, this);
+
+
+
+
+        world.blockChange((int)this.getX(), (int)this.getY());
     }
 
     public void destroyClear(World world, Block block) {

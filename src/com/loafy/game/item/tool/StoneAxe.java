@@ -12,7 +12,7 @@ public class StoneAxe extends Tool {
     }
 
     public void initMaterials() {
-        addMaterial(Material.WOOD.getID(), 8f);
+        addMaterial(Material.LOG.getID(), 8f);
         addMaterial(Material.LEAF.getID(), 8f);
         addMaterial(Material.CHEST.getID(), 8f);
     }

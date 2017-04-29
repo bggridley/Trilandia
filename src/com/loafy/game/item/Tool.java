@@ -45,14 +45,16 @@ public abstract class Tool extends Item {
         float digSpeed = getSpeed(block.getMaterial()) * delta; //* (float) Main.UPS / (float) Main.FPS;
 
 
-        if (Math.abs(x - mx) / Material.SIZE <= 4) {
-            if (Math.abs(y - my) / Material.SIZE <= 4) {
-                player.getController().setDugBlock(block);
+        if(block.getMaterial().getBreakConditions(world, mx, my)) {
+            if (Math.abs(x - mx) / Material.SIZE <= 4) {
+                if (Math.abs(y - my) / Material.SIZE <= 4) {
+                    player.getController().setDugBlock(block);
 
-                if (block.getMaterial().isSolid()) {
-                    block.setHardness(block.getHardness() - digSpeed);
-                    if (block.getHardness() <= 0) {
-                        block.destroy(world);
+                    if (block.getMaterial().isSolid()) {
+                        block.setHardness(block.getHardness() - digSpeed);
+                        if (block.getHardness() <= 0) {
+                            block.destroy(world);
+                        }
                     }
                 }
             }

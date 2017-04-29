@@ -14,7 +14,7 @@ public class GuiObject {
 
     }
 
-    public void update() {
+    public void update(float delta) {
 
     }
 

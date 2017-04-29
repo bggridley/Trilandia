@@ -22,8 +22,8 @@ public class Container {
             currentGui.render();
     }
 
-    public void update() {
+    public void update(float delta) {
         if(currentGui != null)
-            currentGui.update();
+            currentGui.update(delta);
     }
 }

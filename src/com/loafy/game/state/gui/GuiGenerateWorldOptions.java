@@ -32,9 +32,9 @@ public class GuiGenerateWorldOptions extends Gui {
         textBox.setX((Display.getWidth() - 200f) / 2f);
     }
 
-    public void update() {
-        super.update();
-        textBox.update();
+    public void update(float delta) {
+        super.update(delta);
+        textBox.update(delta);
     }
 
     public void render() {

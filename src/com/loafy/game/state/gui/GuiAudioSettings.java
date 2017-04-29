@@ -14,7 +14,7 @@ public class GuiAudioSettings extends Gui {
     }
 
 
-    public void update() {
-        super.update();
+    public void update(float delta) {
+        super.update(delta);
     }
 }

@@ -5,6 +5,7 @@ import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.objects.GuiLoadingBar;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
+import com.loafy.game.world.lighting.LightMap;
 import util.LineSmoother;
 
 import java.awt.*;
@@ -25,6 +26,8 @@ public class WorldGenerator {
 
     public BufferedImage image;
     public int width, height;
+
+    public LightMap lightMap;
 
     private int spawnX;
     private int spawnY;
@@ -49,6 +52,8 @@ public class WorldGenerator {
         lineBlocks = new boolean[width][height];
         topBlocks = new int[width];
 
+        this.lightMap = new LightMap(width, height);
+
         loadingBar = menuState.guiGeneratingWorld.getLoadingBar();
 
         for (int x = 0; x < walls.length; x++) {
@@ -66,6 +71,7 @@ public class WorldGenerator {
         generateLines();
         generateCaves();
         generateTerrain();
+        generateLightMap();
     }
 
     public void cleanUp() {
@@ -73,6 +79,15 @@ public class WorldGenerator {
             for (int y = 0; y < blocks[0].length; y++) {
                 blocks[x][y] = null;
                 walls[x][y] = null;
+            }
+        }
+    }
+
+    public void generateLightMap() {
+        for(int i = 0; i < blocks.length; i++) {
+            for(int j = 0; j < blocks[0].length; j++) {
+                Material bm = blocks[i][j].getMaterial();
+                lightMap.setDecrement(i, j, bm.getDecrement());
             }
         }
     }
@@ -146,24 +161,33 @@ public class WorldGenerator {
 
         loadingBar.setStatus("Generating terrain.");
 
-        int lastTree = 0;
+
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[0].length; y++) {
                 Block block = blocks[x][y];
                 if (y == topBlocks[x]) {
 
                     for (int i = 0; i < y; i++) {
-                        blocks[x][i].setMaterial(Material.AIR);
+                        blocks[x][i] = new Block(Material.AIR, x * Material.SIZE, i * Material.SIZE); //todo .setMaterial(Material.AIR);
                     }
 
                     block.setMaterial(Material.GRASS);
-                    lastTree = createTree(lastTree, x, y);
                     break;
                 }
             }
 
             //maybe make a method that takes x, y to clean this up more ....
 
+        }
+
+        int lastTree = 0;
+        for (int x = 0; x < blocks.length; x++) {
+            for (int y = 0; y < blocks[0].length; y++) {
+                if (y == topBlocks[x]) {
+                    lastTree = createTree(lastTree, x, y);
+                    break;
+                }
+            }
         }
 /*
         for (int x = 0; x < blocks.length; x++) {
@@ -177,7 +201,7 @@ public class WorldGenerator {
                         lastTree = x;
                         for (int i = 0; i < treeHeight; i++) {
                             int yy = y - i - 1;
-                            this.walls[x][yy] = new Block(Material.WOOD, x * Material.SIZE, yy * Material.SIZE);
+                            this.walls[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);
                         }
 
                         int startY = y - treeHeight;
@@ -216,7 +240,7 @@ public class WorldGenerator {
                         lastTree = x;
                         for (int i = 0; i < treeHeight; i++) {
                             int yy = y - i - 1;
-                            this.walls[x][yy] = new Block(Material.WOOD, x * Material.SIZE, yy * Material.SIZE);
+                            this.walls[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);
                         }
 
                         int startY = y - treeHeight;
@@ -273,20 +297,17 @@ public class WorldGenerator {
             lastTree = x;
             for (int i = 0; i < treeHeight; i++) {
                 int yy = y - i - 1;
-                this.blocks[x][yy] = new Block(Material.WOOD, x * Material.SIZE, yy * Material.SIZE);  //TODO Check is out bounds
+                this.blocks[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);  //TODO Check is out bounds
             }
 
             int startY = y - treeHeight;
 
+            for (int yy = -1; yy < 2; yy++) {
+                for (int xx = -1; xx < 2; xx++) {
 
-                for (int yy = -1; yy < 2; yy++) {
-                    for (int xx = -1; xx < 2; xx++) {
+                    if (!(x + xx < 3 && x + xx > blocks.length - 3 && startY + yy < 3 && startY + yy > blocks[0].length - 3)) {
+                       blocks[x + xx][startY + yy].setMaterial(Material.LEAF);
 
-                    if (!(x + xx < 5 && x + xx > blocks.length - 5 && startY + yy < 3 && startY + yy > blocks[0].length - 3)) {
-                        blocks[x + xx + 4][startY + yy].setMaterial(Material.LEAF);
-                        if(xx == 1) {
-                            System.out.println("set leaf for " + (x + xx));
-                        }
                         //setBlock(Material.LEAF, x + xx, startY + yy); //this.blocks[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
                     }
                 }

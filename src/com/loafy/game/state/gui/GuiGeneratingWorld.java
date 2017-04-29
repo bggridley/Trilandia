@@ -17,8 +17,8 @@ public class GuiGeneratingWorld extends Gui {
         Main.ingameState.generateWorld(fileName, worldName, 2000, 992);
     }
 
-    public void update() {
-        super.update();
+    public void update(float delta) {
+        super.update(delta);
     }
 
     public void render() {

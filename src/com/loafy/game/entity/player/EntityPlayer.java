@@ -21,9 +21,12 @@ import com.loafy.game.world.World;
 import com.loafy.game.world.block.MaterialType;
 import com.loafy.game.world.block.blocks.BlockChest;
 import com.loafy.game.world.data.PlayerData;
+import com.loafy.game.world.lighting.Light;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Rectangle;
 
 import java.util.ArrayList;
@@ -73,10 +76,10 @@ public class EntityPlayer extends EntityLiving {
         this.maxStamina = 100F;
         this.stamina = maxStamina;
 
-        this.PADDING_LEFT = 16;
-        this.PADDING_RIGHT = 16;
+        this.PADDING_LEFT = 26;
+        this.PADDING_RIGHT = 20;
 
-        this.JUMP_START = -9F;
+        this.JUMP_START = -11F;
 
         selectedItem = new ItemStack(new Item(), 0);
         controller = new PlayerController(this);
@@ -138,7 +141,7 @@ public class EntityPlayer extends EntityLiving {
         }
     }
 
-    public void render(float xOffset, float yOffset) {
+    public void render(float xOffset, float yOffset, float lightLevel) {
 
         ItemStack itemstack = inventory.getSlots()[inventory.getHotbarSlot()].getItemStack();
 
@@ -160,18 +163,19 @@ public class EntityPlayer extends EntityLiving {
                     Resources.blocksSprite.getTexture(49).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
             }
         } else if (item instanceof Tool) {
+            Color light = new Color(lightLevel, lightLevel, lightLevel);
             if (!lastDirection) // right
-                item.getTexture().render(x - xOffset + 44, y - yOffset + 14);
+                item.getTexture().render(x - xOffset + 44, y - yOffset + 14, 1f, false, light);
             else // left
-                item.getTexture().render(x - xOffset - 12, y - yOffset + 14, 1f, true);
+                item.getTexture().render(x - xOffset - 12, y - yOffset + 14, 1f, true, light);
         }
 
-        super.render(xOffset, yOffset);
+        super.render(xOffset, yOffset, lightLevel);
     }
 
     public void placeBlock(Item item, Material material) {
         int mx = (int) (Mouse.getX() + world.xOffset);
-        int my = (int) (Display.getHeight() - Mouse.getY() + world.yOffset);
+        int my = (int) (Display.getHeight() - Mouse.getY() + world.yOffset); //todo make all these block things the same too for mouse
 
         if (!canPlace(material, mx, my))
             return;
@@ -187,6 +191,11 @@ public class EntityPlayer extends EntityLiving {
 
         // just set to a new block
 
+        float light = material.getLight();
+        if(light != -1) {
+            world.getLightMap().addLight(new Light(world.getLightMap(), light,(int) x / Material.SIZE, (int) y / Material.SIZE));
+        }
+
         switch (material.getType()) {
             case BLOCK:
                 world.setBlock(block, (int) x, (int) y);
@@ -198,7 +207,7 @@ public class EntityPlayer extends EntityLiving {
     }
 
     public boolean canPlace(Material m, int mx, int my) {
-        int blockX = world.getBlockX(mx) * Material.SIZE;
+        int blockX = world.getBlockX(mx) * Material.SIZE; //todo this isn't blockX this is the block position relative to the world
         int blockY = world.getBlockY(my) * Material.SIZE;
 
         Block block = world.getBlock(blockX, blockY);

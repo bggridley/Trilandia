@@ -35,8 +35,9 @@ public class Main {
     public static int scale = 2;
 
     //this means fps can change but will still update the same
-    public static int FPS = 30; // PREFERRED FPS
-    public static float constantInterval = 1000 / 30; // CONSTANT TICK XD
+    public static int FPS = 144; // PREFERRED FPS
+    public static int rFPS = 30;
+    public static float constantInterval = 1000 / rFPS; // CONSTANT TICK XD
 
     public static int delta;
 

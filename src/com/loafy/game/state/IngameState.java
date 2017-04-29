@@ -11,6 +11,7 @@ import com.loafy.game.state.gui.*;
 import com.loafy.game.world.*;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
+import com.loafy.game.world.data.LightMapData;
 import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.data.WorldData;
 
@@ -94,6 +95,7 @@ public class IngameState extends Container implements GameState {
                 world = new World(fileName, worldName, generator);
                 WorldLoader.save(world.getData(), fileName, "world.dat");
                 WorldLoader.save(world.getPlayer().getData(), fileName, "player.dat");
+                WorldLoader.save(world.getLightMap().getData(), fileName, "light.dat");
                 generated = true;
 
                 Main.setState(GameState.INGAME);
@@ -113,17 +115,18 @@ public class IngameState extends Container implements GameState {
                     e.printStackTrace();
                 }
 
-                world = new World(fileName, (WorldData)WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData)WorldLoader.load(PlayerData.class, fileName, "player.dat")); // this is redundant but whatever l 0 l
+                world = new World(fileName, (WorldData)WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData)WorldLoader.load(PlayerData.class, fileName, "player.dat"), (LightMapData)WorldLoader.load(LightMapData.class, fileName, "light.dat"));
                 loaded = true;
 
                 Main.setState(GameState.INGAME);
                 setCurrentGui(null);
+                Thread.currentThread().interrupt();
             }
         }).start();
     }
 
     public void update(float delta) {
-        super.update();
+        super.update(delta);
 
         if (world == null)
             return;

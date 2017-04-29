@@ -65,8 +65,8 @@ public class GuiMainMenu extends Gui {
         ((MenuState) state).setScrollingBackground(true);
     }
 
-    public void update() {
-        super.update();
+    public void update(float delta) {
+        super.update(delta);
     }
 
     public void render() {

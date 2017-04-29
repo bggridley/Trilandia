@@ -4,6 +4,7 @@ import com.loafy.game.item.ItemStack;
 import com.loafy.game.item.material.ItemPlantFiber;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;
+import com.loafy.game.world.lighting.LightMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Random;
 public class MaterialLeaf extends Material {
 
     public MaterialLeaf() {
-        super(5, 45, true, true, MaterialType.WALL, "Leaf");
+        super(6, 45, LightMap.DEFAULT,true, true, MaterialType.WALL, "Leaf");
     }
 
     public List<ItemStack> getDrops() {

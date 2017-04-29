@@ -27,8 +27,8 @@ public class EntityGoat extends EntityLiving {
         world.addEntity(this);
     }
 
-    public void render(float xOffset, float yOffset) {
-        super.render(xOffset, yOffset);
+    public void render(float xOffset, float yOffset, float lightLevel) {
+        super.render(xOffset, yOffset, lightLevel);
     }
 
     public void update(float delta) {

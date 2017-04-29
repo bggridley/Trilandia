@@ -1,6 +1,5 @@
 package com.loafy.game.world.block;
 
-import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.gfx.SpriteSheet;
 import com.loafy.game.gfx.Texture;
@@ -9,22 +8,27 @@ import com.loafy.game.item.ItemBlock;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.materials.*;
+import com.loafy.game.world.lighting.Light;
+import com.loafy.game.world.lighting.LightMap;
+import org.newdawn.slick.Color;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.loafy.game.world.block.MaterialType.*;
 
 public class Material {
-    
+
+    protected boolean transparent = false;
     protected boolean passable;
     protected boolean solid;
     protected int id;
     protected float hardness;
     protected float friction = 1f;
+    private float lightDecrement;
     protected String name;
     protected MaterialType type;
+
 
     private SpriteSheet sprites;
     private Animation breakAnimation;
@@ -33,25 +37,30 @@ public class Material {
     public static final int scale = 2;
     public static final int SIZE = size * scale;
 
-    public static Material DIRT_WALL = new Material(2 + 16, 85, true, true, WALL, "Dirt Wall");
-    public static Material STONE_WALL = new Material(1 + 16, 750, true, true, WALL, "Stone Wall");
-    public static Material WOOD = new MaterialWood();
-    public static Material LEAF = new MaterialLeaf();
+    public static Material DIRT_WALL = new Material(2 + 16, 85, 0f, true, true, WALL, "Dirt Wall");
+    public static Material STONE_WALL = new Material(1 + 16, 750, 0f,true, true, WALL, "Stone Wall");
+    public static Material WOOD_WALL = new MaterialWoodWall();
 
+    public static Material LOG = new MaterialLog();
+    public static Material LEAF = new MaterialLeaf();
     public static Material AIR = new MaterialAir();
     public static Material STONE = new MaterialStone();
-    public static Material DIRT = new Material(2, 85, true, false, BLOCK, "Dirt");
+    public static Material DIRT = new MaterialDirt();
     public static Material GRASS = new MaterialGrass();
+    public static Material WOOD = new MaterialWood();
 
     public static Material CHEST = new MaterialChest();
 
-    public Material(int id, float hardness, boolean solid, boolean passable, MaterialType type, String name) {
+    public static Material TORCH = new MaterialTorch();
+
+    public Material(int id, float hardness, float lightDecrement, boolean solid, boolean passable, MaterialType type, String name) {
         this.name = name;
         this.id = id;
         this.solid = solid;
         this.hardness = hardness;
         this.type = type;
         this.passable = passable;
+        this.lightDecrement = lightDecrement;
 
         sprites = Resources.blocksSprite;
         this.breakAnimation = new Animation("blocks.png", 2, 16, 16);
@@ -83,8 +92,20 @@ public class Material {
         else return null;
     }
 
-    public void render(float x, float y) {
-        sprites.getTexture(id).render(x, y);
+    public void render(float x, float y, float light) {
+        sprites.getTexture(id).render(x, y, 1f, false, new Color(light, light, light));
+    }
+
+    public float getLight() {
+        return -1;
+    }
+
+    public boolean isTransparent() {
+        return transparent;
+    }
+
+    public float getDecrement() {
+        return lightDecrement;
     }
 
     public SpriteSheet getSpriteSheet() {
@@ -120,6 +141,14 @@ public class Material {
     }
 
     public boolean getPlaceConditions(World world, int blockX, int blockY) {
+        return true;
+    }
+
+    public boolean getBreakConditions(World world, int blockX, int blockY) {
+        Block above = world.getBlock(blockX, blockY - SIZE);
+
+        if(above.getMaterial() == Material.LOG && this != Material.LOG) return false;
+
         return true;
     }
 }

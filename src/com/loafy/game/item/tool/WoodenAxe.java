@@ -12,9 +12,10 @@ public class WoodenAxe extends Tool {
     }
 
     public void initMaterials() {
-        addMaterial(Material.WOOD.getID(), 4f);
-        addMaterial(Material.LEAF.getID(), 4f);
-        addMaterial(Material.CHEST.getID(), 4f);
+        addMaterial(Material.LOG.getID(), 20f);
+        addMaterial(Material.WOOD.getID(), 20f);
+        addMaterial(Material.LEAF.getID(), 20f);
+        addMaterial(Material.CHEST.getID(), 20f);
     }
 
     public String getName () {

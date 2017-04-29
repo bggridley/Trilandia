@@ -60,7 +60,7 @@ public class Gui {
         Font.renderCenteredString(title, 42, 6f, Color.white);
     }
 
-    public void update() {
+    public void update(float delta) {
         for(GuiButton button : buttons) {
             button.update();
         }

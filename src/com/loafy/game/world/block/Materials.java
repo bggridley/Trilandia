@@ -10,12 +10,16 @@ public class Materials {
         materials = new ArrayList<>();
         materials.add(Material.DIRT_WALL);
         materials.add(Material.STONE_WALL);
-        materials.add(Material.WOOD);
+        materials.add(Material.LOG);
         materials.add(Material.LEAF);
         materials.add(Material.AIR);
         materials.add(Material.STONE);
         materials.add(Material.DIRT);
         materials.add(Material.GRASS);
+        materials.add(Material.WOOD);
+        materials.add(Material.WOOD_WALL);
+
+        materials.add(Material.TORCH);
     }
 
     public static Material getID(int id) {

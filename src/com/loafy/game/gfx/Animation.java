@@ -1,6 +1,7 @@
 package com.loafy.game.gfx;
 
 import com.loafy.game.Main;
+import org.newdawn.slick.Color;
 
 import java.io.Serializable;
 
@@ -29,8 +30,8 @@ public class Animation {
         this.sheet = new SpriteSheet(Texture.loadBi(path, scale), rows, cols);
     }
 
-    public void render(float x, float y) {
-        sheet.getTexture(frame).render(x, y);
+    public void render(float x, float y, float lightLevel) {
+        sheet.getTexture(frame).render(x, y, 1f, false, new Color(lightLevel, lightLevel, lightLevel));
     }
 
     public void update() {

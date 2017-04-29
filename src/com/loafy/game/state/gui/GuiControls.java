@@ -67,8 +67,8 @@ public class GuiControls extends Gui {
         }
     }
 
-    public void update() {
-        super.update();
+    public void update(float delta) {
+        super.update(delta);
 
         for (ControlButton button : cButtons) {
             button.update();

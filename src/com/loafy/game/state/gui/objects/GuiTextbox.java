@@ -9,13 +9,15 @@ import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import util.KeyConversions;
 
+import static com.loafy.game.Main.delta;
+
 public class GuiTextbox extends GuiObject {
 
     public String text;
     public int maxLength;
     public int size;
 
-    private int time = 1;
+    private float time = 1;
 
     public GuiTextbox(float x, float y, int size, int maxLength) {
         super(x, y);
@@ -24,8 +26,8 @@ public class GuiTextbox extends GuiObject {
         this.size = size;
     }
 
-    public void update() {
-        time++;
+    public void update(float delta) {
+        time+= delta;
         int k = InputManager.keyPressed();
         String key = KeyConversions.getKeyName(k);
         char keyChar = InputManager.keyPressedChar();
@@ -54,7 +56,7 @@ public class GuiTextbox extends GuiObject {
     }
 
     public void renderUnderscore(float width) {
-        if((time / 15 % 2 == 0)) {
+        if(((int)time / 15 % 2 == 0)) {
             String s = text.length() == maxLength ? "|" : "_";
             Font.renderString(s, x - 40 + width, y + 6, size, Color.black);
         }

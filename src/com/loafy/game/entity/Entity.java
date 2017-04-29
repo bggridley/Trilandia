@@ -56,7 +56,7 @@ public class Entity {
     public float startY, endY;
 
     public int immunity = 240;
-    public int time;
+    public float time;
 
     public Entity(World world, float x, float y) {
         this.world = world;
@@ -66,8 +66,8 @@ public class Entity {
         this.box = new Rectangle(x + 4, y + 4, width - 8, height - 8);
     }
 
-    public void render(float xOffset, float yOffset) {
-        animation.render(x - xOffset, y - yOffset);
+    public void render(float xOffset, float yOffset, float lightLevel) {
+        animation.render(x - xOffset, y - yOffset, lightLevel);
     }
 
     public void update(float delta) {

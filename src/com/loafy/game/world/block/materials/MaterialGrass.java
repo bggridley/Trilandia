@@ -11,7 +11,7 @@ import java.util.List;
 public class MaterialGrass extends Material {
 
     public MaterialGrass() {
-        super(3, 115, true, false, MaterialType.BLOCK, "Grass");
+        super(3, 115, 0.08f,true, false, MaterialType.BLOCK, "Grass");
     }
 
     public List<ItemStack> getDrops() {

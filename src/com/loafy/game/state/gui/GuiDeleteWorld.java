@@ -1,6 +1,7 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.state.GameState;
+import com.loafy.game.state.MenuState;
 import com.loafy.game.world.WorldLoader;
 
 public class GuiDeleteWorld extends GuiPrompt {
@@ -14,5 +15,6 @@ public class GuiDeleteWorld extends GuiPrompt {
 
     public void accept() {
         WorldLoader.delete(worldSlot);
+        ((MenuState)state).guiPlay.updateWorlds();
     }
 }

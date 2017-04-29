@@ -5,11 +5,15 @@ import com.loafy.game.gfx.Texture;
 import com.loafy.game.item.Item;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
+import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class EntityItem extends Entity {
 
     private Item item;
-    private final int pickupTime = 120; //* (Main.FPS / Main.UPS);
+    private final float pickupTime = 120 / (Main.FPS / Main.rFPS); //* (Main.FPS / Main.UPS);
 
 
     public EntityItem(World world, float x, float y, Item item) {
@@ -18,7 +22,7 @@ public class EntityItem extends Entity {
         this.time = pickupTime;
         this.height = item.getTexture().getHeight() / 2;
         this.width = item.getTexture().getHeight() / 2;
-        this.MAX_FALLING_SPEED = 3.5f;
+        this.MAX_FALLING_SPEED = 6f;
         this.airFriction = 0.1f;
     }
 
@@ -26,23 +30,23 @@ public class EntityItem extends Entity {
         this(world, x, y, Item.fromID(id));
     }
 
-    public void render(float xOffset, float yOffset) {
-        item.render(x - xOffset, y - yOffset , 0.5f, false);
+    public void render(float xOffset, float yOffset, float lightLevel) {
+        item.render(x - xOffset, y - yOffset, 0.5f, false, new Color(lightLevel, lightLevel, lightLevel));
     }
 
     public Item getItem() {
         return item;
     }
 
-    public int getPickupTime() {
+    public float getPickupTime() {
         return pickupTime;
     }
 
-    public int getTime() {
+    public float getTime() {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(float time) {
         this.time = time;
     }
 }

@@ -35,13 +35,17 @@ public class ItemBlock extends Item {
         player.placeBlock(this, material);
     }
 
+    public float getLight() {
+        return material.getLight();
+    }
+
     public void render(float x, float y) {
         getTexture().render(x, y);
     }
 
     public void render(float x, float y, float scale, boolean flip) {
         getTexture().render(x, y, scale, flip);
-        texture.render(x, y, scale, false);
+        //texture.render(x, y, scale, false);
     }
 
     public Material getMaterial() {

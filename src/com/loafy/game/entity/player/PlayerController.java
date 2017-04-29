@@ -79,7 +79,7 @@ public class PlayerController {
     /**
      * Iterate through visible chunks and remove all block damage player inflicted.
      */
-    public void clearBlockDamage() {  //TODO this may be inneficient because its updating like everything lol
+    public void clearBlockDamage() {  //TODO this may be inneficient because its updating like everything lol, also add to entityplayer class lol
         for (Chunk chunk : world.getActiveChunks()) {
             for (int x = 0; x < chunk.getBlocks().length; x++) {
                 for (int y = 0; y < chunk.getBlocks()[x].length; y++) {

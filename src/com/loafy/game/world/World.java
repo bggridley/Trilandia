@@ -1,19 +1,27 @@
 package com.loafy.game.world;
 
 import com.google.gson.Gson;
+import com.loafy.game.Main;
 import com.loafy.game.entity.Entity;
 import com.loafy.game.entity.EntityGoat;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Texture;
 import com.loafy.game.input.InputManager;
+import com.loafy.game.item.ItemBlock;
+import com.loafy.game.item.ItemStack;
 import com.loafy.game.item.container.ContainerSlot;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.Materials;
 import com.loafy.game.world.block.blocks.BlockChest;
+import com.loafy.game.world.data.LightMapData;
 import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.data.WorldData;
+import com.loafy.game.world.lighting.DirectionalLight;
+import com.loafy.game.world.lighting.Light;
+import com.loafy.game.world.lighting.LightBlock;
+import com.loafy.game.world.lighting.LightMap;
 import org.lwjgl.opengl.Display;
 
 import java.util.ArrayList;
@@ -24,9 +32,10 @@ public class World {
     private ArrayList<Chunk> activeChunks;
 
     private ArrayList<Entity> entities;
-
     private ArrayList<Entity> entitiesToAdd;
     private ArrayList<Entity> entitiesToRemove;
+
+    private LightMap lightMap;
 
     private EntityPlayer player;
     private EntityGoat goat;
@@ -39,6 +48,8 @@ public class World {
     public String fileName;
 
     private int width, height;
+
+    Light playerlight;
 
     public void initLists() {
         this.activeChunks = new ArrayList<>();
@@ -58,18 +69,23 @@ public class World {
 
         this.width = generator.width;
         this.height = generator.height;
+        this.lightMap = generator.lightMap; //todo load this from the file l m a o
+
 
         this.player = new EntityPlayer(this, generator.getSpawnX() * Material.SIZE, generator.getSpawnY() * Material.SIZE);
         this.goat = new EntityGoat(this, generator.getSpawnX() * Material.SIZE, generator.getSpawnY() * Material.SIZE);
 
         this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.width / 2);
         this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.height / 2);
-        this.loadChunk((int)player.getX() / Material.SIZE, (int)player.getY() / Material.SIZE);
+        this.loadChunk((int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
         initBackground();
+
+        playerlight = new Light(lightMap, 1f, (int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
+        lightMap.addLight(playerlight);
     }
 
     // add more data in constructor to find player spawn location and shit lol
-    public World(String fileName, WorldData worldData, PlayerData playerData) {
+    public World(String fileName, WorldData worldData, PlayerData playerData, LightMapData lightMapData) {
         initLists();
         this.name = worldData.name;
         this.fileName = fileName;
@@ -77,13 +93,30 @@ public class World {
         this.width = worldData.width;
         this.height = worldData.height;
 
+        this.lightMap = new LightMap(width, height);
+        lightMap.setDecrementValues(lightMapData.decrementValues);
+
         this.player = new EntityPlayer(this, playerData.spawnX * Material.SIZE, playerData.spawnY * Material.SIZE); // maybe make spawnx/y an int to save a TEENIE TINIIE bit of space :) ) ))
         this.goat = new EntityGoat(this, playerData.spawnX * Material.SIZE, playerData.spawnY * Material.SIZE);
 
         this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.width / 2);
         this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.height / 2);
-        this.loadChunk((int)player.getX() / Material.SIZE, (int)player.getY() / Material.SIZE);
+        this.loadChunk((int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
+
+
+        //lightMap.addLight(new Light(lightMap, 1f, (int) (player.getX() / Material.SIZE), (int) (player.getY() / Material.SIZE) + 8));
+        //updateLighting();
+
+        playerlight = new Light(lightMap, 1f, (int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
+        lightMap.addLight(playerlight);
+
         initBackground();
+
+        try {
+            Main.getDrawable().makeCurrent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -142,17 +175,22 @@ public class World {
                     Block block = chunk.getBlocks()[x][y];
                     Block wall = chunk.getWalls()[x][y];
 
+                    int blockX = (int) block.getX() / Material.SIZE;
+                    int blockY = (int) block.getY() / Material.SIZE;
 
-                    if(block.getMaterial() == Material.AIR && wall != null)
-                    wall.render(xOffset, yOffset);
 
-                    block.render(xOffset, yOffset);
+                    if (block.getMaterial().isTransparent() && wall != null)
+                        wall.render(xOffset, yOffset, lightMap.getLevel(blockX, blockY));
+
+                    block.render(xOffset, yOffset, lightMap.getLevel(blockX, blockY));
+
                 }
             }
         }
 
         for (Entity entity : entities) {
-            entity.render(xOffset, yOffset);
+            float light = lightMap.getLevel((int)entity.getX() / Material.SIZE, (int)entity.getY() / Material.SIZE);
+            entity.render(xOffset, yOffset, light);
         }
 
         player.renderContainer();
@@ -165,6 +203,17 @@ public class World {
             entity.update(delta);
         }
 
+        ItemStack itemStack = player.getInventory().getSlots()[player.getInventory().getHotbarSlot()].getItemStack();
+        if (itemStack.getItem().getLight() != -1) {
+            playerlight.setEnabled(this, false, true);
+            playerlight.setLightLevel(itemStack.getItem().getLight());
+            playerlight.setX((int) player.getX() / Material.SIZE + 1);
+            playerlight.setY((int) player.getY() / Material.SIZE);
+            updateLighting(false);
+        } else {
+            playerlight.setEnabled(this, false, false);
+        }
+
         entities.removeAll(entitiesToRemove);
         entities.addAll(entitiesToAdd);
 
@@ -173,25 +222,76 @@ public class World {
     }
 
 
+    public void blockChange(int x, int y) { // update lightmap in chunk area lm o
+        Block block = getBlock(x, y);
+
+        lightMap.setDecrement(x / Material.SIZE, y / Material.SIZE, block.getMaterial().getDecrement());
+
+
+        updateLighting(true);
+    }
+
+    public void updateLighting(boolean sun) {
+        int lowestX = Integer.MAX_VALUE;
+        int lowestY = Integer.MAX_VALUE;
+        int highestX = 0;
+        int highestY = 0;
+
+        for (int i = 0; i < activeChunks.size(); i++) {
+            Chunk chunk = activeChunks.get(i);
+
+            int curX = chunk.getChunkX() * Chunk.SIZE;
+            int curY = chunk.getChunkY() * Chunk.SIZE;
+
+            if (curX < lowestX) lowestX = curX;
+            if (curY < lowestY) lowestY = curY;
+            if (curX + Chunk.SIZE > highestX) highestX = curX;
+            if (curY + Chunk.SIZE > highestY) highestY = curY;
+        }
+
+        lightMap.update(this, lowestX - Chunk.SIZE, lowestY - Chunk.SIZE, highestX + Chunk.SIZE, highestY + Chunk.SIZE, true);
+    }
+
+
     public void updateChunks() {
         int chunkX = ((int) (player.x / Material.SIZE)) / Chunk.SIZE;
         int chunkY = ((int) (player.y / Material.SIZE)) / Chunk.SIZE;
 
+
+        boolean loaded = false;
         for (int i = -2; i < 3; i++) {
-            for (int j = -1; j < 2; j++) {
-                loadChunk(chunkX + i, chunkY + j);
+            for (int j = -1; j < 3; j++) {
+                loaded = loadChunk(chunkX + i, chunkY + j);
             }
         }
+
         unloadChunks(chunkX, chunkY);
+
+        if (loaded) {
+            updateLighting(true);
+        }
     }
 
-    public void loadChunk(int chunkX, int chunkY) {
-        if (getChunk(chunkX, chunkY) != null) return;
+
+    public boolean loadChunk(int chunkX, int chunkY) {
+        if (getChunk(chunkX, chunkY) != null) return false;
 
         if (chunkX >= 0 && chunkY >= 0 && chunkX < width / Chunk.SIZE && chunkY < height / Chunk.SIZE) {
             Chunk chunk = WorldLoader.fetchChunk(fileName, chunkX, chunkY);
+
+            for(int i = 0; i < chunk.getBlocks().length; i++) {
+                for(int j = 0; j < chunk.getBlocks()[0].length; j++) {
+                    float lightBlock = chunk.getBlock(i, j).getMaterial().getLight();
+                    if(lightBlock != -1) {
+                        lightMap.addLight(new Light(lightMap, lightBlock,(int) chunk.getBlock(i, j).getX() / Material.SIZE, (int) chunk.getBlock(i, j).getY() / Material.SIZE));
+                    }
+                }
+            }
+
             activeChunks.add(chunk);
         }
+
+        return true;
     }
 
 
@@ -203,8 +303,19 @@ public class World {
         while (it.hasNext()) {
             Chunk chunk = it.next();
             if ((Math.abs(chunkX - chunk.getChunkX()) >= 4) || Math.abs(chunkY - chunk.getChunkY()) >= 3) {
+
+                for(int i = 0; i < chunk.getBlocks().length; i++) {
+                    for(int j = 0; j < chunk.getBlocks()[0].length; j++) {
+                        float lightBlock = chunk.getBlock(i, j).getMaterial().getLight();
+                        if(lightBlock != -1) {
+                            lightMap.removeLightAt((int) chunk.getBlock(i, j).getX() / Material.SIZE, (int) chunk.getBlock(i, j).getY() / Material.SIZE);
+                        }
+                    }
+                }
+
                 WorldLoader.saveChunk(fileName, chunk, gson);
                 it.remove();
+
                 System.out.println("unloading/saving chunk " + chunk.getChunkX() + ", " + chunk.getChunkY() + "... active chunks: " + activeChunks.size());
             }
         }
@@ -214,7 +325,7 @@ public class World {
 
         Gson gson = new Gson();
 
-        for(Chunk chunk : activeChunks) {
+        for (Chunk chunk : activeChunks) {
             WorldLoader.saveChunk(fileName, chunk, gson);
         }
 
@@ -233,17 +344,17 @@ public class World {
         return null;
     }
 
-    // make this take a block x instead of normal x / y casted to an int lmfao retard
-    public Block getBlock(int x, int y) {
-        int blockX = x / Material.SIZE;
-        int blockY = y / Material.SIZE;
+    //todo make this take a block x instead of normal x / y casted to an int lmfao retard
+    public Block getBlock(float x, float y) {
+        int blockX = (int) x / Material.SIZE;
+        int blockY = (int) y / Material.SIZE;
 
         Chunk chunk = getChunk(blockX / Chunk.SIZE, blockY / Chunk.SIZE);
 
         if (chunk == null)
             return null;
 
-        if(!inBounds(blockX, blockY))
+        if (!inBounds(blockX, blockY))
             return null;
 
         return chunk.getBlock(blockX % Chunk.SIZE, blockY % Chunk.SIZE);
@@ -258,7 +369,7 @@ public class World {
         if (chunk == null)
             return null;
 
-        if(!inBounds(blockX, blockY))
+        if (!inBounds(blockX, blockY))
             return null;
 
         return chunk.getWall(blockX % Chunk.SIZE, blockY % Chunk.SIZE);
@@ -267,7 +378,18 @@ public class World {
     public void setBlock(Block block, int x, int y) {
         int blockX = x / Material.SIZE;
         int blockY = y / Material.SIZE;
-        getChunk(blockX / Chunk.SIZE, blockY / Chunk.SIZE).getBlocks()[blockX % Chunk.SIZE][blockY % Chunk.SIZE] = block;
+
+        Chunk chunk = getChunk(blockX / Chunk.SIZE, blockY / Chunk.SIZE);
+
+        if (chunk == null)
+            return;
+
+        if (!inBounds(blockX, blockY))
+            return;
+
+        chunk.getBlocks()[blockX % Chunk.SIZE][blockY % Chunk.SIZE] = block;
+
+        blockChange(x, y);
     }
 
 
@@ -275,9 +397,19 @@ public class World {
     public void setWall(Block block, int x, int y) {
         int blockX = x / Material.SIZE;
         int blockY = y / Material.SIZE;
-        getChunk(blockX / Chunk.SIZE, blockY / Chunk.SIZE).getWalls()[blockX % Chunk.SIZE][blockY % Chunk.SIZE] = block;
-    }
 
+        Chunk chunk = getChunk(blockX / Chunk.SIZE, blockY / Chunk.SIZE);
+
+        if (chunk == null)
+            return;
+
+        if (!inBounds(blockX, blockY))
+            return;
+
+        chunk.getWalls()[blockX % Chunk.SIZE][blockY % Chunk.SIZE] = block;
+
+        blockChange(x, y);
+    }
 
     public Block createBlock(Material material, float x, float y) {
         return createBlock(material.getID(), x, y);
@@ -300,6 +432,10 @@ public class World {
 
     public boolean inBounds(int x, int y) {
         return !(x < 0 || x > width || y < 0 || y > height);
+    }
+
+    public LightMap getLightMap() {
+        return lightMap;
     }
 
     public void addEntityLoop(Entity entity) {

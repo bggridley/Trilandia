@@ -11,6 +11,7 @@ import com.loafy.game.item.tool.*;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Material;
+import org.newdawn.slick.Color;
 
 import java.util.Random;
 
@@ -52,6 +53,10 @@ public class Item {
         getTexture().render(x, y, scale, flip);
     }
 
+    public void render(float x, float y, float scale, boolean flip, Color color) {
+        getTexture().render(x, y, scale, flip, color);
+    }
+
     public void useLeft(EntityPlayer player, float delta) { // todo
         int mx = (int) (InputManager.mouseX + player.getWorld().xOffset);
         int my = (int) (InputManager.mouseY + player.getWorld().yOffset);
@@ -85,6 +90,10 @@ public class Item {
 
         if (!instantPickup)
             ei.setTime(0);
+    }
+
+    public float getLight() {
+        return -1f;
     }
 
     public int getID() {

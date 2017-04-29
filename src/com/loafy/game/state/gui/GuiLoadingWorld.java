@@ -18,8 +18,8 @@ public class GuiLoadingWorld extends Gui {
         Main.ingameState.loadWorld(name);
     }
 
-    public void update() {
-        super.update();
+    public void update(float delta) {
+        super.update(delta);
     }
 
     public void render() {

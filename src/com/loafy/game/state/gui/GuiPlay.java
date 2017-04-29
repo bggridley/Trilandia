@@ -17,6 +17,12 @@ public class GuiPlay extends Gui {
     public GuiPlay(final MenuState state, Gui parent) {
         super(state, parent, "Play");
 
+        updateWorlds();
+    }
+
+    public void updateWorlds() {
+        getButtons().clear();
+
         String path = Resources.gameLocation + "/saves";
         Resources.makeFile(path);
 
@@ -42,7 +48,7 @@ public class GuiPlay extends Gui {
                 data = worlds.get(directoryName);
             }
 
-            GuiWorldButton worldButton = new GuiWorldButton(state, data, i, 200 + (i * 75)) {
+            GuiWorldButton worldButton = new GuiWorldButton((MenuState) state, data, i, 200 + (i * 75)) {
 
                 public void action() {
 
