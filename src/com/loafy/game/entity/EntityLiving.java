@@ -1,7 +1,5 @@
 package com.loafy.game.entity;
 
-import com.loafy.game.Main;
-import com.loafy.game.entity.Entity;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Material;
 
@@ -35,7 +33,9 @@ public class EntityLiving extends Entity {
         if (falling && !jumping) {
             float add = GRAVITY * delta;
             dy += add;
-            if (dy > MAX_FALLING_SPEED) {  dy = MAX_FALLING_SPEED; }
+            if (dy > MAX_FALLING_SPEED) {
+                dy = MAX_FALLING_SPEED;
+            }
 
         }
 
@@ -50,8 +50,8 @@ public class EntityLiving extends Entity {
         fallHeight = startY - y;
 
 
-        if(fallHeight <= Material.SIZE * -8) {
-            float damage =((Material.SIZE * -4) - fallHeight) / 3;
+        if (fallHeight <= Material.SIZE * -8) {
+            float damage = ((Material.SIZE * -4) - fallHeight) / 3;
             damage(damage);
         }
 
@@ -59,7 +59,7 @@ public class EntityLiving extends Entity {
     }
 
     public void damage(float damage) {
-        if(time > immunity) {
+        if (time > immunity) {
             this.health -= damage;
             damaged = true;
         }

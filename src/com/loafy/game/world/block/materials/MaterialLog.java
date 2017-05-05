@@ -18,25 +18,26 @@ public class MaterialLog extends Material {
     }
 
     public void destroy(World world, float x, float y) {
-        int blockX = (int)x;
-        int blockY = (int)y;
+        int blockX = (int) x;
+        int blockY = (int) y;
 
-        outer: for(int i = 1; i < 50; i++) {
+        outer:
+        for (int i = 1; i < 50; i++) {
             Block block = world.getBlock(blockX, blockY - (i * Material.SIZE));
 
-            if(block == null) continue;
+            if (block == null) continue;
 
-            if(block.getMaterial().getID() == Material.LOG.getID()) {
+            if (block.getMaterial().getID() == Material.LOG.getID()) {
                 block.destroyClear(world, block);
             } else {
 
-                blockX = (int)block.getX() - Material.SIZE;
-                blockY = (int)block.getY() - Material.SIZE * 2;
+                blockX = (int) block.getX() - Material.SIZE;
+                blockY = (int) block.getY() - Material.SIZE * 2;
 
-                for(int j = 0; j < 3; j++) {
-                    for(int k = 0; k < 3; k++) {
+                for (int j = 0; j < 3; j++) {
+                    for (int k = 0; k < 3; k++) {
                         Block leafblock = world.getBlock(blockX + (j * Material.SIZE), blockY + (k * Material.SIZE));
-                        if(leafblock.getMaterial() == Material.LEAF) {
+                        if (leafblock.getMaterial() == Material.LEAF) {
                             block.destroyClear(world, leafblock);
                         } else {
                             break outer;

@@ -1,7 +1,6 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.state.GameState;
-import com.loafy.game.state.MenuState;
 
 public class GuiAudioSettings extends Gui {
 

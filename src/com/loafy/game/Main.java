@@ -9,18 +9,11 @@ import com.loafy.game.state.MenuState;
 import com.loafy.game.world.block.Materials;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.*;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.opengl.CursorLoader;
-import org.newdawn.slick.opengl.ImageDataFactory;
-import org.newdawn.slick.opengl.LoadableImageData;
 import util.KeyConversions;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 public class Main {
 
@@ -38,6 +31,8 @@ public class Main {
     public static int FPS = 144; // PREFERRED FPS
     public static int rFPS = 30;
     public static float constantInterval = 1000 / rFPS; // CONSTANT TICK XD
+
+    public static int CURRENT_FPS = 0;
 
     public static int delta;
 
@@ -80,13 +75,16 @@ public class Main {
                 if (getState() != null)
                     getState().update(delta / constantInterval);
 
-                Display.makeCurrent();
+                if (!Display.isCurrent())
+                    Display.makeCurrent();
+
                 getState().render();
                 InputManager.update();
 
                 if (getTime() - lastTimer >= 1000) {
                     lastTimer += 1000;
                     System.out.println("Frames: " + frames + " | Ticks: " + updates);
+                    CURRENT_FPS = frames;
                     frames = 0;
                     updates = 0;
                 }

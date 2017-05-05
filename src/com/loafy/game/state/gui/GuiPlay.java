@@ -34,17 +34,17 @@ public class GuiPlay extends Gui {
 
         });
 
-        if(directories == null)
+        if (directories == null)
             return;
 
         for (File file : directories) {
             worlds.put(file.getName(), (WorldData) WorldLoader.load(WorldData.class, file.getName(), "world.dat"));
         }
 
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             String directoryName = "world" + (i + 1);
             WorldData data = null;
-            if(worlds.containsKey(directoryName)) {
+            if (worlds.containsKey(directoryName)) {
                 data = worlds.get(directoryName);
             }
 

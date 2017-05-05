@@ -44,6 +44,8 @@ public class WorldGenerator {
     private MenuState menuState = Main.menuState;
     private GuiLoadingBar loadingBar;
 
+    private Random random = new Random();
+
     public WorldGenerator(int width, int height) {
         this.width = width;
         this.height = height;
@@ -71,6 +73,7 @@ public class WorldGenerator {
         generateLines();
         generateCaves();
         generateTerrain();
+        generateOre();
         generateLightMap();
     }
 
@@ -84,8 +87,8 @@ public class WorldGenerator {
     }
 
     public void generateLightMap() {
-        for(int i = 0; i < blocks.length; i++) {
-            for(int j = 0; j < blocks[0].length; j++) {
+        for (int i = 0; i < blocks.length; i++) {
+            for (int j = 0; j < blocks[0].length; j++) {
                 Material bm = blocks[i][j].getMaterial();
                 lightMap.setDecrement(i, j, bm.getDecrement());
             }
@@ -97,7 +100,6 @@ public class WorldGenerator {
 
         try {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            Random random = new Random();
 
             int iterations = 8;
             float threshold = 5F;
@@ -157,8 +159,6 @@ public class WorldGenerator {
             e.printStackTrace();
         }
 
-        Random random = new Random();
-
         loadingBar.setStatus("Generating terrain.");
 
 
@@ -189,115 +189,15 @@ public class WorldGenerator {
                 }
             }
         }
-/*
-        for (int x = 0; x < blocks.length; x++) {
-            for (int y = 0; y < blocks[x].length; y++) {
-                if (blocks[x][y].getMaterial() == Material.GRASS) {
-
-                    // TREES
-
-                    int treeHeight = 6 + random.nextInt(16 - 6);
-                    if (x - 4 >= lastTree && random.nextInt(5) == 3) {
-                        lastTree = x;
-                        for (int i = 0; i < treeHeight; i++) {
-                            int yy = y - i - 1;
-                            this.walls[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);
-                        }
-
-                        int startY = y - treeHeight;
-
-                        for (int xx = -1; xx < 2; xx++) {
-                            for (int yy = -1; yy < 2; yy++) {
-
-                                if (!(x + xx < 3 || x + xx > walls.length - 3 || startY + yy < 3 || startY + yy > walls[0].length - 3)) {
-                                    this.walls[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-        state.status = "Replacing above ground caves";
-        state.step++;
-        // TOP GRASS BLOCKS AND REPLACING ABOVE GROUND CAVES
-
-        state.status = "Placing plant life";
-        state.step++;
-        int dirtY = 20;
-        int lastTree = 0;
-        for (int x = 0; x < blocks.length; x++) {
-            for (int y = 0; y < blocks[x].length; y++) {
-                if (blocks[x][y].getMaterial() == Material.GRASS) {
-
-                    // TREES
-
-                    int treeHeight = 6 + random.nextInt(16 - 6);
-                    if (x - 4 >= lastTree && random.nextInt(5) == 3) {
-                        lastTree = x;
-                        for (int i = 0; i < treeHeight; i++) {
-                            int yy = y - i - 1;
-                            this.walls[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);
-                        }
-
-                        int startY = y - treeHeight;
-
-                        for (int xx = -1; xx < 2; xx++) {
-                            for (int yy = -1; yy < 2; yy++) {
-
-                                if (!(x + xx < 3 || x + xx > walls.length - 3 || startY + yy < 3 || startY + yy > walls[0].length - 3)) {
-                                    this.walls[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
-                                }
-                            }
-                        }
-                    }
-
-                    // STONE WALLS
-
-                    int caveY = 15;
-                    for (int i = dirtY + 1; i < dirtY + caveY; i++) {
-                        int yy = y + i;
-                        this.blocks[x][yy] = new Block(Material.STONE, x * Material.SIZE, (yy) * Material.SIZE);
-                    }
-
-                    for (int i = dirtY; i < blocks[0].length - dirtY - y; i++) {
-                        int yy = y + i;
-                        this.walls[x][yy] = new Block(Material.STONE_WALL, x * Material.SIZE, (yy) * Material.SIZE);
-                    }
-
-
-                    state.status = "Placing dirt";
-                    state.step = 13;
-                    // DIRT WALLS + DIRT
-
-                    for (int i = 0; i < dirtY; i++) {
-                        int yy = y + i + 1;
-                        if (x <= blocks.length && yy < blocks[x].length) {
-                            this.blocks[x][yy] = new Block(Material.DIRT, x * Material.SIZE, (yy) * Material.SIZE);
-                            this.walls[x][yy] = new Block(Material.DIRT_WALL, x * Material.SIZE, (yy) * Material.SIZE);
-
-                            if (i < 4)
-                                this.walls[x][y + i] = new Block(Material.AIR, x * Material.SIZE, (y + i) * Material.SIZE);
-                        }
-                    }
-
-                }
-            }
-        }
-        }*/
     }
 
     public int createTree(int lastTree, int x, int y) {
-        Random random = new Random();
         int treeHeight = 6 + random.nextInt(16 - 6);
         if (x - 4 >= lastTree && random.nextInt(5) == 3) {
             lastTree = x;
             for (int i = 0; i < treeHeight; i++) {
                 int yy = y - i - 1;
-                this.blocks[x][yy] = new Block(Material.LOG, x * Material.SIZE, yy * Material.SIZE);  //TODO Check is out bounds
+                setBlock(blocks, Material.LOG, x, yy);
             }
 
             int startY = y - treeHeight;
@@ -306,7 +206,7 @@ public class WorldGenerator {
                 for (int xx = -1; xx < 2; xx++) {
 
                     if (!(x + xx < 3 && x + xx > blocks.length - 3 && startY + yy < 3 && startY + yy > blocks[0].length - 3)) {
-                       blocks[x + xx][startY + yy].setMaterial(Material.LEAF);
+                        setBlock(blocks, Material.LEAF, x + xx, startY + yy);
 
                         //setBlock(Material.LEAF, x + xx, startY + yy); //this.blocks[x + xx][startY + yy] = new Block(Material.LEAF, (x + xx) * Material.SIZE, (startY + yy) * Material.SIZE);
                     }
@@ -320,7 +220,6 @@ public class WorldGenerator {
     public void generateCaves() {
         loadingBar.setStatus("Generating caves.");
 
-        Random random = new Random();
         float dif = (ce - cs) / progressionBlocks; //increment from each block
 
         for (int x = 0; x < blocks.length; x++) {
@@ -339,7 +238,7 @@ public class WorldGenerator {
         }
 
         for (int i = 0; i < iterations; i++) {
-            refine();
+            refine(blocks, Material.STONE, Material.AIR);
             loadingBar.setStatus("Generating caves.");
         }
 
@@ -353,7 +252,7 @@ public class WorldGenerator {
                         spawnY = y - 3;
                     }
 
-                    for(int i = 2; i < height - y; i++) {
+                    for (int i = 2; i < height - y; i++) {
                         walls[x][y + i].setMaterial(Material.STONE_WALL);
                     }
 
@@ -371,29 +270,85 @@ public class WorldGenerator {
             }
         }
 
+
     }
 
-    public void refine() {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int nbs = getNeighbors(x, y);
-
-                if (nbs > 4) {
-                    getBlock(x, y).setMaterial(Material.STONE);
-                } else if (nbs < 4) {
-                    getBlock(x, y).setMaterial(Material.AIR);
+    private void generateOre() {
+        for (int x = 0; x < blocks.length; x++) {
+            for (int y = 0; y < blocks[0].length; y++) {
+                Block block = walls[x][y];
+                if (block.getMaterial() == Material.STONE_WALL) {
+                    if (random.nextInt(35 ^ 2) == 0) { // 1 in every 20 square blocks
+                        generateOre(x, y, 10, Material.COPPER_ORE);
+                    }
                 }
             }
         }
     }
 
-    public int getNeighbors(int x, int y) {
+    private void generateOre(int x, int y, int size, Material material) {
+        float csa = 0.675f;
+       // float dec = (float) size - s
+        Block[][] plane = new Block[20][20];
+
+        int mid = size / 2;
+
+        for (int xx = 0; xx < plane.length; xx++) {
+            for (int yy = 0; yy < plane[0].length; yy++) {
+                plane[xx][yy] = new Block(material, xx * Material.SIZE, yy * Material.SIZE);
+                if(random.nextFloat() <= csa)
+                    plane[xx][yy].setMaterial(Material.AIR);
+                else
+                    plane[xx][yy].setMaterial(material);
+            }
+        }
+
+
+        for (int i = 0; i < 7; i++) {
+            refine(plane, Material.AIR, material);
+        }
+
+
+        for (int xx = 0; xx < plane.length; xx++) {
+            for (int yy = 0; yy < plane[0].length; yy++) {
+                Block block = plane[xx][yy];
+                Material mat = block.getMaterial();
+
+                if(mat.getID() == material.getID()) {
+                    int setX = x - (20 / 2) + xx;
+                    int setY = y - (20 / 2) + yy;
+
+                    if(getBlock(blocks, setX, setY) != null && getBlock(blocks, setX, setY).getMaterial() == Material.STONE) {
+                        setBlock(blocks, material, setX, setY);
+                        System.out.println("actually worked: " + setX + "," + setY + "... part of " + x + ", " + y);
+                    }
+                }
+            }
+        }
+        // alive = AIR, dead = COPPER/material
+    }
+
+    public void refine(Block[][] array, Material alive, Material dead) {
+        for (int x = 0; x < array.length; x++) {
+            for (int y = 0; y < array[0].length; y++) {
+                int nbs = getNeighbors(array, x, y, alive);
+
+                if (nbs > 4) {
+                    getBlock(array, x, y).setMaterial(alive);
+                } else if (nbs < 4) {
+                    getBlock(array, x, y).setMaterial(dead);
+                }
+            }
+        }
+    }
+
+    public int getNeighbors(Block[][] array, int x, int y, Material alive) {
         int wallCount = 0;
         for (int nx = x - 1; nx <= x + 1; nx++) {
             for (int ny = y - 1; ny <= y + 1; ny++) {
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                if (nx >= 0 && nx < array.length && ny >= 0 && ny < array[0].length) {
                     if (nx != x || ny != y) {
-                        if (getBlock(nx, ny).getMaterial() == Material.STONE) wallCount++;
+                        if (getBlock(array, nx, ny).getMaterial() == alive) wallCount++;
                     }
                 } else {
                     wallCount++;
@@ -420,17 +375,17 @@ public class WorldGenerator {
         return this.walls;
     }
 
-    public void setBlock(Material material, int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
+    public void setBlock(Block[][] array, Material material, int x, int y) {
+        if (x < 0 || x > array.length - 1 || y < 0 || y > array[0].length - 1)
             return;
-        blocks[x][y] = new Block(material, x * Material.SIZE, y * Material.SIZE);
+        array[x][y].setMaterial(material);
     }
 
-    public Block getBlock(int x, int y) { // TODO put these other places so everything can access them
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
+    public Block getBlock(Block[][] array, int x, int y) { // TODO put these other places so everything can access them
+        if (x < 0 || x > array.length - 1 || y < 0 || y > array[0].length - 1)
             return null;
 
-        return blocks[x][y];
+        return array[x][y];
     }
 
 

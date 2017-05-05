@@ -1,7 +1,6 @@
 package com.loafy.game.state.gui;
 
 import com.loafy.game.gfx.Font;
-
 import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.state.gui.objects.GuiTextbox;

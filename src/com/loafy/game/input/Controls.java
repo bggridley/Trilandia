@@ -1,6 +1,5 @@
 package com.loafy.game.input;
 
-import com.loafy.game.Main;
 import com.loafy.game.resources.Resources;
 import util.KeyConversions;
 

@@ -1,9 +1,9 @@
 package com.loafy.game.world.block.materials;
 
+import com.loafy.game.world.World;
+import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;
-import com.loafy.game.world.lighting.Light;
-import com.loafy.game.world.lighting.LightMap;
 
 public class MaterialTorch extends Material {
 
@@ -15,5 +15,13 @@ public class MaterialTorch extends Material {
 
     public float getLight() {
         return 0.8f;
+    }
+
+    public boolean getPlaceConditions(World world, int blockX, int blockY) {
+        Block wall = world.getWall(blockX, blockY);
+
+        if(wall.getMaterial() == Material.AIR) return false;
+
+        return true;
     }
 }

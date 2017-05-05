@@ -9,21 +9,21 @@ public class Container {
     public void setCurrentGuiFromContainer(Gui gui) {
         this.currentGui = gui;
 
-        if(gui != null)
-        gui.init();
+        if (gui != null)
+            gui.init();
     }
 
-    public Gui getCurrentGuiFromContainer () {
+    public Gui getCurrentGuiFromContainer() {
         return currentGui;
     }
 
     public void render() {
-        if(currentGui != null)
+        if (currentGui != null)
             currentGui.render();
     }
 
     public void update(float delta) {
-        if(currentGui != null)
+        if (currentGui != null)
             currentGui.update(delta);
     }
 }

@@ -1,7 +1,6 @@
 package com.loafy.game.gfx;
 
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 
 public class SpriteSheet {
 

@@ -5,11 +5,9 @@ import com.loafy.game.Main;
 import com.loafy.game.entity.Entity;
 import com.loafy.game.entity.EntityGoat;
 import com.loafy.game.entity.player.EntityPlayer;
+import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Texture;
-import com.loafy.game.input.InputManager;
-import com.loafy.game.item.ItemBlock;
 import com.loafy.game.item.ItemStack;
-import com.loafy.game.item.container.ContainerSlot;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
@@ -18,11 +16,10 @@ import com.loafy.game.world.block.blocks.BlockChest;
 import com.loafy.game.world.data.LightMapData;
 import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.data.WorldData;
-import com.loafy.game.world.lighting.DirectionalLight;
 import com.loafy.game.world.lighting.Light;
-import com.loafy.game.world.lighting.LightBlock;
 import com.loafy.game.world.lighting.LightMap;
 import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,6 +59,8 @@ public class World {
      * Apply all properties from worldgenerator to current world
      */
 
+    // todo just make it save the world, return to main thread, and then use the same constructor to load from the file because having to do things twice exactly the same is very annoying
+
     public World(String fileName, String name, WorldGenerator generator) {
         initLists();
         this.name = name;
@@ -71,12 +70,11 @@ public class World {
         this.height = generator.height;
         this.lightMap = generator.lightMap; //todo load this from the file l m a o
 
-
         this.player = new EntityPlayer(this, generator.getSpawnX() * Material.SIZE, generator.getSpawnY() * Material.SIZE);
         this.goat = new EntityGoat(this, generator.getSpawnX() * Material.SIZE, generator.getSpawnY() * Material.SIZE);
 
-        this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.width / 2);
-        this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.height / 2);
+        this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.getWidth() / 2);
+        this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.getHeight() / 2);
         this.loadChunk((int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
         initBackground();
 
@@ -99,13 +97,9 @@ public class World {
         this.player = new EntityPlayer(this, playerData.spawnX * Material.SIZE, playerData.spawnY * Material.SIZE); // maybe make spawnx/y an int to save a TEENIE TINIIE bit of space :) ) ))
         this.goat = new EntityGoat(this, playerData.spawnX * Material.SIZE, playerData.spawnY * Material.SIZE);
 
-        this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.width / 2);
-        this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.height / 2);
+        this.xOffset = player.getX() - (Display.getWidth() / 2) + (player.getWidth() / 2);
+        this.yOffset = player.getY() - (Display.getHeight() / 2) + (player.getHeight() / 2);
         this.loadChunk((int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
-
-
-        //lightMap.addLight(new Light(lightMap, 1f, (int) (player.getX() / Material.SIZE), (int) (player.getY() / Material.SIZE) + 8));
-        //updateLighting();
 
         playerlight = new Light(lightMap, 1f, (int) player.getX() / Material.SIZE, (int) player.getY() / Material.SIZE);
         lightMap.addLight(playerlight);
@@ -189,11 +183,20 @@ public class World {
         }
 
         for (Entity entity : entities) {
-            float light = lightMap.getLevel((int)entity.getX() / Material.SIZE, (int)entity.getY() / Material.SIZE);
+            float light = lightMap.getLevel((int) entity.getX() / Material.SIZE, (int) entity.getY() / Material.SIZE);
             entity.render(xOffset, yOffset, light);
         }
 
         player.renderContainer();
+
+
+        float yStart = Display.getHeight() - 120;
+        float fontHeight = 18f;
+        Font.renderString("FPS: " + Main.CURRENT_FPS, 6, yStart + (0 * fontHeight), 2, Color.white);
+        Font.renderString("Active Chunks:  " + (activeChunks.size() + 1), 6, yStart + (1 * fontHeight), 2, Color.white);
+        Font.renderString("Entities:  " + (entities.size() + 1), 6, yStart + (2 * fontHeight), 2, Color.white);
+        Font.renderString("Coordinates: " + (int) player.getX() / Material.SIZE + ", " + (int) player.getY() / Material.SIZE, 6, yStart + (3 * fontHeight), 2, Color.white);
+        Font.renderString("Chunk Coordinates: " + (int) player.getX() / Material.SIZE / Chunk.SIZE + ", " + (int) player.getY() / Material.SIZE / Chunk.SIZE, 6, yStart + (4 * fontHeight), 2, Color.white);
     }
 
     public void update(float delta) {
@@ -203,15 +206,15 @@ public class World {
             entity.update(delta);
         }
 
-        ItemStack itemStack = player.getInventory().getSlots()[player.getInventory().getHotbarSlot()].getItemStack();
+        ItemStack itemStack = player.getInventory().getSlots().get(player.getInventory().getHotbarSlot()).getItemStack();
         if (itemStack.getItem().getLight() != -1) {
-            playerlight.setEnabled(this, false, true);
+            playerlight.setEnabled(this, true);
             playerlight.setLightLevel(itemStack.getItem().getLight());
             playerlight.setX((int) player.getX() / Material.SIZE + 1);
             playerlight.setY((int) player.getY() / Material.SIZE);
-            updateLighting(false);
+            updateLighting();
         } else {
-            playerlight.setEnabled(this, false, false);
+            playerlight.setEnabled(this, false);
         }
 
         entities.removeAll(entitiesToRemove);
@@ -228,10 +231,10 @@ public class World {
         lightMap.setDecrement(x / Material.SIZE, y / Material.SIZE, block.getMaterial().getDecrement());
 
 
-        updateLighting(true);
+        updateLighting();
     }
 
-    public void updateLighting(boolean sun) {
+    public void updateLighting() {
         int lowestX = Integer.MAX_VALUE;
         int lowestY = Integer.MAX_VALUE;
         int highestX = 0;
@@ -249,26 +252,27 @@ public class World {
             if (curY + Chunk.SIZE > highestY) highestY = curY;
         }
 
-        lightMap.update(this, lowestX - Chunk.SIZE, lowestY - Chunk.SIZE, highestX + Chunk.SIZE, highestY + Chunk.SIZE, true);
+        lightMap.update(this, lowestX - Chunk.SIZE, lowestY - Chunk.SIZE, highestX + Chunk.SIZE, highestY + Chunk.SIZE);
     }
 
 
     public void updateChunks() {
-        int chunkX = ((int) (player.x / Material.SIZE)) / Chunk.SIZE;
-        int chunkY = ((int) (player.y / Material.SIZE)) / Chunk.SIZE;
+        int chunkX = ((int) (player.getX() / Material.SIZE)) / Chunk.SIZE;
+        int chunkY = ((int) (player.getY() / Material.SIZE)) / Chunk.SIZE;
 
 
         boolean loaded = false;
         for (int i = -2; i < 3; i++) {
-            for (int j = -1; j < 3; j++) {
-                loaded = loadChunk(chunkX + i, chunkY + j);
+            for (int j = -1; j < 2; j++) {
+                if (loadChunk(chunkX + i, chunkY + j))
+                    loaded = true;
             }
         }
 
         unloadChunks(chunkX, chunkY);
 
         if (loaded) {
-            updateLighting(true);
+            updateLighting();
         }
     }
 
@@ -279,11 +283,11 @@ public class World {
         if (chunkX >= 0 && chunkY >= 0 && chunkX < width / Chunk.SIZE && chunkY < height / Chunk.SIZE) {
             Chunk chunk = WorldLoader.fetchChunk(fileName, chunkX, chunkY);
 
-            for(int i = 0; i < chunk.getBlocks().length; i++) {
-                for(int j = 0; j < chunk.getBlocks()[0].length; j++) {
+            for (int i = 0; i < chunk.getBlocks().length; i++) {
+                for (int j = 0; j < chunk.getBlocks()[0].length; j++) {
                     float lightBlock = chunk.getBlock(i, j).getMaterial().getLight();
-                    if(lightBlock != -1) {
-                        lightMap.addLight(new Light(lightMap, lightBlock,(int) chunk.getBlock(i, j).getX() / Material.SIZE, (int) chunk.getBlock(i, j).getY() / Material.SIZE));
+                    if (lightBlock != -1) {
+                        lightMap.addLight(new Light(lightMap, lightBlock, (int) chunk.getBlock(i, j).getX() / Material.SIZE, (int) chunk.getBlock(i, j).getY() / Material.SIZE));
                     }
                 }
             }
@@ -304,10 +308,10 @@ public class World {
             Chunk chunk = it.next();
             if ((Math.abs(chunkX - chunk.getChunkX()) >= 4) || Math.abs(chunkY - chunk.getChunkY()) >= 3) {
 
-                for(int i = 0; i < chunk.getBlocks().length; i++) {
-                    for(int j = 0; j < chunk.getBlocks()[0].length; j++) {
+                for (int i = 0; i < chunk.getBlocks().length; i++) {
+                    for (int j = 0; j < chunk.getBlocks()[0].length; j++) {
                         float lightBlock = chunk.getBlock(i, j).getMaterial().getLight();
-                        if(lightBlock != -1) {
+                        if (lightBlock != -1) {
                             lightMap.removeLightAt((int) chunk.getBlock(i, j).getX() / Material.SIZE, (int) chunk.getBlock(i, j).getY() / Material.SIZE);
                         }
                     }

@@ -1,6 +1,5 @@
 package com.loafy.game.entity;
 
-import com.loafy.game.Main;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.world.World;
@@ -15,48 +14,44 @@ public class Entity {
 
     // CONSTANTS
 
-    public final float GRAVITY = 0.65F;
-    public final float VELOCITY_DECREASE = 0.35F;
-    public float MAX_FALLING_SPEED = 12.5F;
-    public float JUMP_START;
+    protected final float GRAVITY = 0.65F;
 
-    public int PADDING_LEFT;
-    public int PADDING_RIGHT;
+    protected float VELOCITY_DECREASE = 0.35F;
+    protected float MAX_FALLING_SPEED = 12.5F;
+    protected float JUMP_START;
+
+    protected int PADDING_LEFT;
+    protected int PADDING_RIGHT;
 
     // LOCATION
 
-    public float x, y;
-    public float dx, dy;
+    protected float x, y;
+    protected float dx, dy;
 
     // ATTRIBUTES
 
-    public float width;
-    public float height;
-    public float speed;
+    protected float width;
+    protected float height;
+    protected float speed;
 
     // MOVEMENT
 
     public boolean left;
     public boolean right;
-    public boolean falling;
+    protected boolean falling;
 
     // COLLISIONS
 
-    public Rectangle box;
-    public boolean topLeft;
-    public boolean topRight;
-    public boolean midLeft;
-    public boolean midRight;
-    public boolean bottomLeft;
-    public boolean bottomRight;
+    private Rectangle box; //todo just use coordinates to detect collision
+    private boolean topLeft, topRight, midLeft, midRight, bottomLeft, bottomRight;
 
-    public float blockFriction;
-    public float airFriction = 1.0f;
+    protected float blockFriction;
+    protected float airFriction = 1.0f;
 
-    public float startY, endY;
+    protected float startY;
 
-    public int immunity = 240;
-    public float time;
+    protected int immunity = 240;
+    protected float time;
 
     public Entity(World world, float x, float y) {
         this.world = world;
@@ -76,7 +71,7 @@ public class Entity {
         move(delta);
         this.box = new Rectangle(x + 4, y + 4, width - 8, height - 8);
 
-        time+=delta;
+        time += delta;
     }
 
     public void calculateMovement(float delta) {
@@ -111,8 +106,8 @@ public class Entity {
             int pr = world.getBlockY((int) toy);
             float ya = (pr + 1) * Material.SIZE;
 
-            if(this instanceof EntityPlayer)
-            world.yOffset -= y - ya;
+            if (this instanceof EntityPlayer)
+                world.yOffset -= y - ya;
 
             y = ya;
 
@@ -123,21 +118,21 @@ public class Entity {
             dy = 0;
 
             int add = 0;
-            if(this instanceof EntityItem)
+            if (this instanceof EntityItem)
                 add = 16;
 
             int pr = world.getBlockY((int) toy);
             float ya = (pr * Material.SIZE) + add;
 
-            if(this instanceof EntityPlayer)
-            world.yOffset -= y - ya;
+            if (this instanceof EntityPlayer)
+                world.yOffset -= y - ya;
 
             y = ya;
 
             land();
         }
 
-        if(!falling) {
+        if (!falling) {
             startY = y;
         }
 
@@ -146,7 +141,7 @@ public class Entity {
         }
     }
 
-    public void calculateCorners(float x, float y) {
+    private void calculateCorners(float x, float y) {
         int leftTile = (int) x + PADDING_LEFT - 4;
         int rightTile = (int) x + (int) width - PADDING_RIGHT;
         int topTile = (int) y + 2;
@@ -179,20 +174,20 @@ public class Entity {
         x += (dx) * delta; //* delta) / 1000 * Main.UPS;
         y += (dy) * delta; //* delta) / 1000 * Main.UPS;
 
-        if(this instanceof EntityPlayer) {
+        if (this instanceof EntityPlayer) {
             world.xOffset += (dx) * delta; //* delta) / 1000 * Main.UPS;
             world.yOffset += (dy) * delta; //* delta) / 1000 * Main.UPS;
         }
 
 
-        if(dx > 0) {
+        if (dx > 0) {
             dx -= VELOCITY_DECREASE * blockFriction;
-            if(dx < 0) dx = 0;
+            if (dx < 0) dx = 0;
         }
 
-        if(dx < 0) {
+        if (dx < 0) {
             dx += VELOCITY_DECREASE * blockFriction;
-            if(dx > 0) dx = 0;
+            if (dx > 0) dx = 0;
         }
     }
 
@@ -205,16 +200,28 @@ public class Entity {
         this.dy = dy;
     }
 
+    public World getWorld() {
+        return world;
+    }
+
+    public Rectangle getBox() {
+        return box;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
     public float getX() {
         return x;
     }
 
     public float getY() {
         return y;
-    }
-
-    public World getWorld() {
-        return world;
     }
 
 }

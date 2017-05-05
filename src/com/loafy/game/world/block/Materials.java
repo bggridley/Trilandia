@@ -18,12 +18,13 @@ public class Materials {
         materials.add(Material.GRASS);
         materials.add(Material.WOOD);
         materials.add(Material.WOOD_WALL);
+        materials.add(Material.COPPER_ORE);
 
         materials.add(Material.TORCH);
     }
 
     public static Material getID(int id) {
-        for(Material material : materials) {
+        for (Material material : materials) {
             if (id == material.getID()) return material;
         }
 

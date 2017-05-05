@@ -5,8 +5,6 @@ import com.loafy.game.resources.Resources;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.data.ChunkData;
-import com.loafy.game.world.data.PlayerData;
-import com.loafy.game.world.data.WorldData;
 
 import java.io.File;
 import java.io.FileReader;

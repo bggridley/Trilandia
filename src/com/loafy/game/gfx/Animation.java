@@ -1,10 +1,5 @@
 package com.loafy.game.gfx;
 
-import com.loafy.game.Main;
-import org.newdawn.slick.Color;
-
-import java.io.Serializable;
-
 public class Animation {
 
     // SHEET
@@ -30,15 +25,15 @@ public class Animation {
         this.sheet = new SpriteSheet(Texture.loadBi(path, scale), rows, cols);
     }
 
-    public void render(float x, float y, float lightLevel) {
-        sheet.getTexture(frame).render(x, y, 1f, false, new Color(lightLevel, lightLevel, lightLevel));
+    public void render(float x, float y, float light) {
+        sheet.getTexture(frame).render(x, y, 1f, false, light, light, light, 255f);
     }
 
     public void update() {
         time++;
 
         if (type != STILL) {
-            if (time % (int)interval == 0) {
+            if (time % (int) interval == 0) {
                 if (frame >= end)
                     frame = start;
                 else

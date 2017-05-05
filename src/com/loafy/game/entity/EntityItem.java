@@ -1,20 +1,14 @@
 package com.loafy.game.entity;
 
 import com.loafy.game.Main;
-import com.loafy.game.gfx.Texture;
 import com.loafy.game.item.Item;
-import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
-import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
-
-import java.awt.*;
 
 public class EntityItem extends Entity {
 
     private Item item;
     private final float pickupTime = 120 / (Main.FPS / Main.rFPS); //* (Main.FPS / Main.UPS);
-
 
     public EntityItem(World world, float x, float y, Item item) {
         super(world, x, y);

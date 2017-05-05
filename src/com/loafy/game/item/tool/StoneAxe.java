@@ -17,7 +17,7 @@ public class StoneAxe extends Tool {
         addMaterial(Material.CHEST.getID(), 8f);
     }
 
-    public String getName () {
+    public String getName() {
         return "Stone Axe";
     }
 

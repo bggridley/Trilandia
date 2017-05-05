@@ -14,7 +14,7 @@ public class GuiButton extends GuiObject {
     public boolean selected;
     protected float width, height;
 
-    private Color color = new Color (235, 235, 255);
+    private Color color = new Color(235, 235, 255);
 
     public GuiButton(Texture buttonTexture, float x, float y) {
         super(x, y);
@@ -62,7 +62,7 @@ public class GuiButton extends GuiObject {
         if (text != null) {
             float size = 2f;
 
-            Font.renderCenteredString(text, y + 14f , size, Color.black);
+            Font.renderCenteredString(text, y + 14f, size, Color.black);
         }
     }
 

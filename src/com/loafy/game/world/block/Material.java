@@ -3,19 +3,16 @@ package com.loafy.game.world.block;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.gfx.SpriteSheet;
 import com.loafy.game.gfx.Texture;
-import com.loafy.game.item.ItemStack;
 import com.loafy.game.item.ItemBlock;
+import com.loafy.game.item.ItemStack;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.materials.*;
-import com.loafy.game.world.lighting.Light;
-import com.loafy.game.world.lighting.LightMap;
-import org.newdawn.slick.Color;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.loafy.game.world.block.MaterialType.*;
+import static com.loafy.game.world.block.MaterialType.WALL;
 
 public class Material {
 
@@ -37,8 +34,10 @@ public class Material {
     public static final int scale = 2;
     public static final int SIZE = size * scale;
 
+    public static Material COPPER_ORE = new MaterialCopperOre();
+
     public static Material DIRT_WALL = new Material(2 + 16, 85, 0f, true, true, WALL, "Dirt Wall");
-    public static Material STONE_WALL = new Material(1 + 16, 750, 0f,true, true, WALL, "Stone Wall");
+    public static Material STONE_WALL = new Material(1 + 16, 750, 0f, true, true, WALL, "Stone Wall");
     public static Material WOOD_WALL = new MaterialWoodWall();
 
     public static Material LOG = new MaterialLog();
@@ -93,7 +92,7 @@ public class Material {
     }
 
     public void render(float x, float y, float light) {
-        sprites.getTexture(id).render(x, y, 1f, false, new Color(light, light, light));
+        sprites.getTexture(id).render(x, y, 1f, false, light, light, light, 255f);
     }
 
     public float getLight() {
@@ -147,7 +146,7 @@ public class Material {
     public boolean getBreakConditions(World world, int blockX, int blockY) {
         Block above = world.getBlock(blockX, blockY - SIZE);
 
-        if(above.getMaterial() == Material.LOG && this != Material.LOG) return false;
+        if (above.getMaterial() == Material.LOG && this != Material.LOG) return false;
 
         return true;
     }

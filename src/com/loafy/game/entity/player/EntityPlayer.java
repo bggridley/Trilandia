@@ -1,36 +1,27 @@
 package com.loafy.game.entity.player;
 
-import com.loafy.game.Main;
+import com.loafy.game.entity.Entity;
 import com.loafy.game.entity.EntityItem;
 import com.loafy.game.entity.EntityLiving;
-import com.loafy.game.input.Controls;
+import com.loafy.game.gfx.Animation;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.item.Item;
 import com.loafy.game.item.ItemBlock;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.item.Tool;
-import com.loafy.game.entity.Entity;
-import com.loafy.game.gfx.Animation;
 import com.loafy.game.item.container.Container;
 import com.loafy.game.item.container.ContainerSlot;
 import com.loafy.game.resources.Resources;
-import com.loafy.game.world.block.Block;
-import com.loafy.game.world.Chunk;
-import com.loafy.game.world.block.Material;
 import com.loafy.game.world.World;
+import com.loafy.game.world.block.Block;
+import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;
-import com.loafy.game.world.block.blocks.BlockChest;
 import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.lighting.Light;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Rectangle;
-
-import java.util.ArrayList;
-import java.util.concurrent.locks.Condition;
 
 
 public class EntityPlayer extends EntityLiving {
@@ -59,7 +50,7 @@ public class EntityPlayer extends EntityLiving {
         this.spawnX = (int) x / Material.SIZE;
         this.spawnY = (int) y / Material.SIZE;
 
-        this.inventory = new PlayerInventory(40);
+        this.inventory = new PlayerInventory(this, 40);
         this.animation = Resources.playerAnimation;
         this.animation.setType(Animation.LOOP);
         this.animation.setInterval(8);
@@ -106,6 +97,7 @@ public class EntityPlayer extends EntityLiving {
             activeContainer.update(this);
         }
 
+
         /**
          * Find nearby item drops and add the to the player inventory.
          */
@@ -120,7 +112,7 @@ public class EntityPlayer extends EntityLiving {
                     if (Math.abs(y + 32 - entityY) <= Material.SIZE * 1.5) {
                         if (entityItem.getTime() >= entityItem.getPickupTime()) {
                             if (inventory.addItem(entityItem.getItem(), 1)) //TODO
-                             world.removeEntityLoop(entityItem);
+                                world.removeEntityLoop(entityItem);
                         }
                     }
                 }
@@ -128,6 +120,10 @@ public class EntityPlayer extends EntityLiving {
         }
 
         super.update(delta);
+    }
+
+    public boolean isAnySelected() {
+        return !(inventory.getMouseSlot() == -1 && inventory.getCraftingList().getMouseSlot() == -1) || (activeContainer != null && activeContainer.getMouseSlot() != -1);
     }
 
     public void renderContainer() {
@@ -143,7 +139,7 @@ public class EntityPlayer extends EntityLiving {
 
     public void render(float xOffset, float yOffset, float lightLevel) {
 
-        ItemStack itemstack = inventory.getSlots()[inventory.getHotbarSlot()].getItemStack();
+        ItemStack itemstack = inventory.getSlots().get(inventory.getHotbarSlot()).getItemStack();
 
         if (itemstack == null) return;
         Item item = itemstack.getItem();
@@ -192,8 +188,8 @@ public class EntityPlayer extends EntityLiving {
         // just set to a new block
 
         float light = material.getLight();
-        if(light != -1) {
-            world.getLightMap().addLight(new Light(world.getLightMap(), light,(int) x / Material.SIZE, (int) y / Material.SIZE));
+        if (light != -1) {
+            world.getLightMap().addLight(new Light(world.getLightMap(), light, (int) x / Material.SIZE, (int) y / Material.SIZE));
         }
 
         switch (material.getType()) {
@@ -215,20 +211,20 @@ public class EntityPlayer extends EntityLiving {
 
         boolean conditions = m.getPlaceConditions(world, blockX, blockY);
 
-        if(m.getType() == MaterialType.BLOCK) {
-            if(block.getMaterial() != Material.AIR) return false;
+        if (m.getType() == MaterialType.BLOCK) {
+            if (block.getMaterial() != Material.AIR) return false;
         } else if (m.getType() == MaterialType.WALL) {
-            if(wall.getMaterial() != Material.AIR) return false;
+            if (wall.getMaterial() != Material.AIR) return false;
         }
 
-        if(!conditions) {
+        if (!conditions) {
             return false;
         }
 
-        if(!m.isPassable()) {
+        if (!m.isPassable()) {
             for (Entity entity : getWorld().getEntities()) {
                 if (entity instanceof EntityLiving) {
-                    if (new Rectangle(block.getX(), block.getY(), Material.SIZE, Material.SIZE).intersects(entity.box)) {
+                    if (new Rectangle(block.getX(), block.getY(), Material.SIZE, Material.SIZE).intersects(entity.getBox())) {
                         return false;
                     }
                 }
@@ -263,8 +259,8 @@ public class EntityPlayer extends EntityLiving {
 
         inventory.closeSlots();
 
-        for (int i = 0; i < Container.GRID_WIDTH; i++) {
-            inventory.getSlots()[i].setActive(true);
+        for (int i = 0; i < Container.GRID_WIDTH; i++) { //make hotbar active
+            inventory.getSlots().get(i).setActive(true);
         }
     }
 

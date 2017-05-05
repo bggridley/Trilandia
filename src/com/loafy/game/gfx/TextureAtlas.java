@@ -11,7 +11,7 @@ public class TextureAtlas {
     }
 
     public Texture getTexture(int x, int y, int width, int height, int scale) {
-        BufferedImage img = image.getSubimage(x, y , width, height);
+        BufferedImage img = image.getSubimage(x, y, width, height);
         img = Texture.toBufferedImage(img.getScaledInstance(img.getWidth() * scale, img.getHeight() * scale, BufferedImage.SCALE_SMOOTH));
 
         return Texture.loadTexture(img);

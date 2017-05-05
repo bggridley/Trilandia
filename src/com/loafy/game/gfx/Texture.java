@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 
 public class Texture {
@@ -88,15 +87,14 @@ public class Texture {
     }
 
     public void render(float x, float y, float scale, boolean flip) {
-        render(x, y, scale, flip, Color.white);
+        render(x, y, scale, flip, 1, 1, 1, 1);
     }
 
     public void render(float x, float y, float scale, boolean flip, Color color) {
-        float r = color.getRed() / 255.0F;
-        float g = color.getGreen() / 255.0F;
-        float b = color.getBlue() / 255.0F;
-        float a = color.getAlpha() / 255.0F;
+        render(x, y, scale, flip, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+    }
 
+    public void render(float x, float y, float scale, boolean flip, float r, float g, float b, float a) {
         GL11.glPushMatrix();
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_COLOR);
@@ -142,7 +140,6 @@ public class Texture {
 
         GL11.glDisable(GL11.GL_TEXTURE_2D);
     }
-
 
 
     public static BufferedImage toBufferedImage(Image img) {

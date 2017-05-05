@@ -8,9 +8,11 @@ import com.loafy.game.gfx.Texture;
 import com.loafy.game.input.Controls;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.state.gui.*;
-import com.loafy.game.world.*;
+import com.loafy.game.world.Chunk;
+import com.loafy.game.world.World;
+import com.loafy.game.world.WorldGenerator;
+import com.loafy.game.world.WorldLoader;
 import com.loafy.game.world.block.Block;
-import com.loafy.game.world.block.Material;
 import com.loafy.game.world.data.LightMapData;
 import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.data.WorldData;
@@ -24,7 +26,7 @@ public class IngameState extends Container implements GameState {
     private Texture darkheart = sprites.getTexture(4);
     private Texture stamina = sprites.getTexture(16);
     private World world;
-    private final int flashTime = 30 ;//* (Main.FPS / Main.UPS);
+    private final int flashTime = 30;//* (Main.FPS / Main.UPS);
     private final int flashInterval = 6; //* (Main.FPS / Main.UPS);
     private int flash = 0;
     private float curTime;
@@ -110,12 +112,13 @@ public class IngameState extends Container implements GameState {
 
             public void run() {
                 try {
+                    if(!Main.getDrawable().isCurrent())
                     Main.getDrawable().makeCurrent();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                world = new World(fileName, (WorldData)WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData)WorldLoader.load(PlayerData.class, fileName, "player.dat"), (LightMapData)WorldLoader.load(LightMapData.class, fileName, "light.dat"));
+                world = new World(fileName, (WorldData) WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData) WorldLoader.load(PlayerData.class, fileName, "player.dat"), (LightMapData) WorldLoader.load(LightMapData.class, fileName, "light.dat"));
                 loaded = true;
 
                 Main.setState(GameState.INGAME);
@@ -143,8 +146,8 @@ public class IngameState extends Container implements GameState {
                 } else
                     this.setCurrentGui(null);
             } else {
-               // if (this.getCurrentGui() == null)
-                    //world.getPlayer().getInventory().handleKeyboard();
+                // if (this.getCurrentGui() == null)
+                //world.getPlayer().getInventory().handleKeyboard();
             }
         }
 
@@ -192,12 +195,12 @@ public class IngameState extends Container implements GameState {
         EntityPlayer player = world.getPlayer();
         if (player.damaged) {
 
-            if ((int)curTime % flashInterval == 0) {
+            if ((int) curTime % flashInterval == 0) {
                 if (flash == 0) flash = 1;
                 else flash = 0;
             }
 
-            curTime+=delta;
+            curTime += delta;
 
             if (curTime > flashTime) {
                 curTime = 0;

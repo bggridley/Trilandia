@@ -36,7 +36,6 @@ public class EntityGoat extends EntityLiving {
         // a i b o i s
 
 
-
         left = Keyboard.isKeyDown(Keyboard.KEY_LEFT);
         right = Keyboard.isKeyDown(Keyboard.KEY_RIGHT);
 

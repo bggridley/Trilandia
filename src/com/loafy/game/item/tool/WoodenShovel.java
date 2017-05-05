@@ -6,7 +6,7 @@ import com.loafy.game.world.block.Material;
 
 public class WoodenShovel extends Tool {
 
-    public WoodenShovel () {
+    public WoodenShovel() {
         super();
         this.id = Item.WOODEN_SHOVEL;
     }

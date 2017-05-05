@@ -8,7 +8,7 @@ public class ItemPlantFiber extends Item {
         this.id = Item.PLANT_FIBER;
     }
 
-    public String getName () {
+    public String getName() {
         return "Plant Fibers";
     }
 }

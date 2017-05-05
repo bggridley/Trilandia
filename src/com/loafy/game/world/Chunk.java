@@ -35,7 +35,7 @@ public class Chunk {
         return blocks[x][y];
     }
 
-    public int getChunkX () {
+    public int getChunkX() {
         return chunkX;
     }
 

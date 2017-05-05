@@ -1,7 +1,6 @@
 package com.loafy.game.world.block.materials;
 
 import com.loafy.game.item.ItemStack;
-import com.loafy.game.item.ItemBlock;
 import com.loafy.game.item.material.ItemSmallStone;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;

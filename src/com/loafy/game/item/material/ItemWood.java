@@ -1,7 +1,6 @@
 package com.loafy.game.item.material;
 
 import com.loafy.game.item.Item;
-import com.loafy.game.item.ItemTier;
 
 public class ItemWood extends Item {
 
@@ -9,7 +8,7 @@ public class ItemWood extends Item {
         this.id = Item.WOOD;
     }
 
-    public String getName () {
+    public String getName() {
         return "Wood";
     }
 }

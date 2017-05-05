@@ -7,11 +7,10 @@ import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.state.gui.objects.GuiWorldButton;
+import com.loafy.game.world.WorldLoader;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.data.WorldData;
-import com.loafy.game.world.WorldLoader;
 import org.newdawn.slick.Color;
-
 
 import java.io.File;
 import java.io.FileFilter;
@@ -54,7 +53,7 @@ public class GuiChooseWorld extends Gui {
 
         });
 
-        if(directories == null)
+        if (directories == null)
             return;
 
         for (File file : directories) {
@@ -90,8 +89,8 @@ public class GuiChooseWorld extends Gui {
 
 
         for (GuiButton button : buttons) {
-            if(button instanceof GuiWorldButton)
-            button.render();
+            if (button instanceof GuiWorldButton)
+                button.render();
         }
 
         renderWalls(false, 0, start);
@@ -101,20 +100,18 @@ public class GuiChooseWorld extends Gui {
             Font.renderCenteredString(title, 42, 8f, Color.white);
 
         for (GuiButton button : buttons) {
-            if(!(button instanceof GuiWorldButton))
+            if (!(button instanceof GuiWorldButton))
                 button.render();
         }
         //
     }
 
 
-
-
     public void renderWalls(boolean background, int start, int end) {
         for (int x = 0; x < (Main.width * Main.scale) / dirt.getWidth(); x++) {
             for (int y = 0; y < (Main.height * Main.scale) / dirt.getHeight(); y++) {
                 if ((y >= start && y <= end)) {
-                    if(background)
+                    if (background)
                         dirtWall.render(x * dirt.getWidth(), y * dirt.getHeight());
                     else
                         dirt.render(x * dirt.getWidth(), y * dirt.getHeight());

@@ -1,6 +1,5 @@
 package com.loafy.game.item.container;
 
-import com.loafy.game.Main;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Texture;
@@ -9,12 +8,13 @@ import com.loafy.game.item.Item;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.gui.Gui;
-import com.loafy.game.world.block.Material;
 import org.newdawn.slick.Color;
+
+import java.util.LinkedList;
 
 public class Container {
 
-    protected ContainerSlot[] slots;
+    protected LinkedList<ContainerSlot> slots;
     public static final int GRID_WIDTH = 10;
     public static final float GRID_SPACING = 3f;
 
@@ -25,15 +25,15 @@ public class Container {
 
     private int mouseSelected;
 
-    public Container(int slots, float startX, float startY) {
-        this.slots = new ContainerSlot[slots];
+    public Container(float startX, float startY) {
+        this.slots = new LinkedList<>();
         this.startX = startX;
         this.startY = startY;
+        slotTexture = Resources.inventoryTexture;
     }
 
-    public Container(int slots, int gridSlots, float startX, float startY) {
-        this(slots, startX, startY);
-        slotTexture = Resources.inventoryTexture;
+    public Container(int gridSlots, float startX, float startY) {
+        this(startX, startY);
 
         if (gridSlots % GRID_WIDTH != 0) try {
             throw new Exception("Grid must be divisible by " + GRID_WIDTH);
@@ -45,13 +45,14 @@ public class Container {
 
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < GRID_WIDTH; x++) {
-                this.slots[x + GRID_WIDTH * y] = new ContainerSlot(x * (ContainerSlot.SIZE + GRID_SPACING), y * (ContainerSlot.SIZE + GRID_SPACING));
+                this.slots.add(x + GRID_WIDTH * y, new ContainerSlot(x * (ContainerSlot.SIZE + GRID_SPACING), y * (ContainerSlot.SIZE + GRID_SPACING)));
+                this.slots.get(x + GRID_WIDTH * y).setGrid(true);
             }
         }
     }
 
-    public Container(int slots, int gridSlots) {
-        this(slots, gridSlots, getDefaultX(), getDefaultY(gridSlots));
+    public Container(int gridSlots) {
+        this(gridSlots, getDefaultX(), getDefaultY(gridSlots));
     }
 
     public void update(EntityPlayer player) {
@@ -60,11 +61,16 @@ public class Container {
     }
 
     public void render(EntityPlayer player) {
-        for (int i = 0; i < slots.length; i++) {
-            ContainerSlot slot = slots[i];
+        for (int i = 0; i < slots.size(); i++) {
+            ContainerSlot slot = slots.get(i);
             if (!slot.isActive()) continue;
-            float x = startX + slot.getX();
-            float y = startY + slot.getY();
+            float x = slot.getX();
+            float y = slot.getY();
+
+            if (slot.isInGrid()) {
+                x += startX;
+                y += startY;
+            }
 
             if (!slot.isSelected())
                 slotTexture.render(x, y);
@@ -74,19 +80,14 @@ public class Container {
 
             if (slot.getItemStack() != null)
                 renderItemStack(slot.getItemStack(), x, y);
-
         }
 
         if (mouseSelected != -1) {
-            ContainerSlot slot = slots[mouseSelected];
+            ContainerSlot slot = slots.get(mouseSelected);
             Item item = slot.getItemStack().getItem();
 
-            if(player.getSelectedItem() != null) {
-                item = player.getSelectedItem().getItem();
-            }
-
-            if (slot.getItemStack().getItem() != null)
-                Font.renderString(item.getName(), InputManager.mouseX + 6f, InputManager.mouseY, 2f, Color.white);
+            if (slot.getItemStack().getItem() != null && !item.getName().equalsIgnoreCase("item name"))
+                Font.renderString(item.getName(), InputManager.mouseX + 32f, InputManager.mouseY, 2f, Color.white);
         }
     }
 
@@ -104,25 +105,29 @@ public class Container {
 
         ItemStack picked = player.getSelectedItem(); // current picked
         if (getMouseSlot() != -1) {
-            ItemStack itemstack = slots[getMouseSlot()].getItemStack();
+            ItemStack itemstack = slots.get(getMouseSlot()).getItemStack();
             if (!itemstack.useLeft()) {
                 if (InputManager.mouse1p) {
-                    if (itemstack.getItem().getID() == picked.getItem().getID()) {
-                        int amount = itemstack.getAmount() + picked.getAmount();
+                    if (!slots.get(getMouseSlot()).action()) {
+                        if (itemstack.getItem().getID() == picked.getItem().getID()) {
+                            int amount = itemstack.getAmount() + picked.getAmount();
 
-                        if (itemstack.getAmount() < itemstack.getMaxStackSize() && picked.getAmount() < picked.getMaxStackSize()) {
-                            if (amount > itemstack.getMaxStackSize()) {
-                                picked.setAmount(picked.getMaxStackSize());
-                                itemstack.setAmount(amount - picked.getMaxStackSize());
-                            } else {
-                                picked.setAmount(amount);
-                                itemstack = new ItemStack(new Item(), 0); // TODO
+                            if (itemstack.getAmount() < itemstack.getMaxStackSize() && picked.getAmount() < picked.getMaxStackSize()) {
+                                if (amount > itemstack.getMaxStackSize()) {
+                                    picked.setAmount(picked.getMaxStackSize());
+                                    itemstack.setAmount(amount - picked.getMaxStackSize());
+                                } else {
+                                    picked.setAmount(amount);
+                                    itemstack = new ItemStack(new Item(), 0); // TODO
+                                }
                             }
                         }
-                    }
 
-                    slots[getMouseSlot()].setItemStack(picked);
-                    picked = itemstack;
+                        slots.get(getMouseSlot()).setItemStack(picked);
+                        picked = itemstack;
+                    } else {
+                        return;
+                    }
                 }
 
                 if (InputManager.mouse2p) {
@@ -136,7 +141,7 @@ public class Container {
                             picked.setAmount(oldamount - amount);
                         }
 
-                        slots[getMouseSlot()].setItemStack(picked);
+                        slots.get(getMouseSlot()).setItemStack(picked);
                         picked = itemstack;
                     } else {
                         if (itemstack.getMaxStackSize() != 1 && itemstack.getAmount() != itemstack.getMaxStackSize()) {
@@ -152,31 +157,45 @@ public class Container {
 
 
                         } else {
-                            slots[getMouseSlot()].setItemStack(picked);
+                            slots.get(getMouseSlot()).setItemStack(picked);
                             picked = itemstack;
                         }
                     }
                 }
             }
 
-            player.setSelectedItem(picked);
+            if (player.getSelectedItem() != picked)
+                inventoryChange();
 
-        } else {
-            if (InputManager.mouse1p) {
-                // dropPicked();
+            player.setSelectedItem(picked);
+        }
+
+        // drop if no slot found
+        if (InputManager.mouse1p) {
+            if (!player.isAnySelected()) {
+                player.dropPicked();
             }
         }
+
     }
 
     public void updateSelected() {
         mouseSelected = -1;
 
-        for (int i = 0; i < slots.length; i++) {
-            ContainerSlot slot = slots[i];
+        for (int i = 0; i < slots.size(); i++) {
+            ContainerSlot slot = slots.get(i);
+
+            float x = slot.getX();
+            float y = slot.getY();
+
+            if (slot.isInGrid()) {
+                x += startX;
+                y += startY;
+            }
 
             slot.setSelected(false);
             if (!slot.isActive()) continue;
-            if (InputManager.mouseInBounds(startX + slot.getX(), startY + slot.getY(), ContainerSlot.SIZE, ContainerSlot.SIZE)) {
+            if (InputManager.mouseInBounds(x, y, ContainerSlot.SIZE + GRID_SPACING + 1f, ContainerSlot.SIZE + GRID_SPACING + 1f)) {
                 slot.setSelected(true);
 
                 mouseSelected = i;
@@ -196,6 +215,11 @@ public class Container {
         }
     }
 
+
+    public void inventoryChange() {
+
+    }
+
     public static float getDefaultX() {
         return Gui.getCenteredX(((ContainerSlot.SIZE + GRID_SPACING) * GRID_WIDTH));
     }
@@ -204,7 +228,7 @@ public class Container {
         return 4;
     }
 
-    public ContainerSlot[] getSlots() {
+    public LinkedList<ContainerSlot> getSlots() {
         return slots;
     }
 }

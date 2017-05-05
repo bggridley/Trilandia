@@ -12,7 +12,8 @@ public class WoodenPickaxe extends Tool {
     }
 
     public void initMaterials() {
-        addMaterial(Material.STONE.getID(), 8f);
+        addMaterial(Material.STONE.getID(), 1000f); //8f
+        addMaterial(Material.COPPER_ORE.getID(), 1000f);
     }
 
     public String getName() {

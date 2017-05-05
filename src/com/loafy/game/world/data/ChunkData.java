@@ -8,7 +8,7 @@ public class ChunkData {
     public int[][] blocks;
     public int[][] walls;
 
-    public ChunkData () {
+    public ChunkData() {
 
     }
 
@@ -18,14 +18,14 @@ public class ChunkData {
         blocks = new int[chunkBlocks.length][chunkBlocks[0].length];
         walls = new int[chunkWalls.length][chunkWalls[0].length];
 
-        for(int x = 0; x < chunkBlocks.length; x++) {
-            for(int y = 0; y < chunkBlocks[0].length; y++) {
+        for (int x = 0; x < chunkBlocks.length; x++) {
+            for (int y = 0; y < chunkBlocks[0].length; y++) {
                 blocks[x][y] = chunkBlocks[x][y].getMaterial().getID();
             }
         }
 
-        for(int x = 0; x < chunkWalls.length; x++) {
-            for(int y = 0; y < chunkWalls[0].length; y++) {
+        for (int x = 0; x < chunkWalls.length; x++) {
+            for (int y = 0; y < chunkWalls[0].length; y++) {
                 walls[x][y] = chunkWalls[x][y].getMaterial().getID();
             }
         }

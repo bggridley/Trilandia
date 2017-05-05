@@ -1,9 +1,8 @@
 package com.loafy.game.state;
 
-import com.loafy.game.Main;
 import com.loafy.game.gfx.Texture;
-import com.loafy.game.state.gui.*;
 import com.loafy.game.resources.Resources;
+import com.loafy.game.state.gui.*;
 
 public class MenuState extends Container implements GameState {
 
@@ -52,7 +51,7 @@ public class MenuState extends Container implements GameState {
     public void update(float delta) {
         super.update(delta);
 
-        if(backgroundScrolling) {
+        if (backgroundScrolling) {
             if (xOffset > 1920 - 1280) m = -1;
             else if (xOffset < 0) m = 1;
             if (delta < 10)
@@ -61,7 +60,7 @@ public class MenuState extends Container implements GameState {
     }
 
     public void render() {
-            background.render(0, 0);
+        background.render(0, 0);
 
         super.render();
     }

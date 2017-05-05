@@ -10,7 +10,7 @@ import com.loafy.game.world.WorldLoader;
 
 public class GuiPaused extends Gui {
 
-    public GuiPaused (final IngameState state) {
+    public GuiPaused(final IngameState state) {
         super(state, "Paused");
 
         float xOffset = 350;

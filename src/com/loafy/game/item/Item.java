@@ -13,8 +13,6 @@ import com.loafy.game.world.World;
 import com.loafy.game.world.block.Material;
 import org.newdawn.slick.Color;
 
-import java.util.Random;
-
 public class Item {
 
     public static int SIZE = 32;
@@ -35,7 +33,7 @@ public class Item {
 
     public Item() {
         items = Resources.itemsSprite;
-        this.maxStackSize = 99;
+        this.maxStackSize = 100;
     }
 
     public Texture getTexture() {

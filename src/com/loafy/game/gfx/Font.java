@@ -2,9 +2,6 @@ package com.loafy.game.gfx;
 
 import com.loafy.game.resources.Resources;
 import org.lwjgl.opengl.Display;
-
-import static org.lwjgl.opengl.GL11.*;
-
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 
@@ -12,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class Font {
 
@@ -84,7 +83,6 @@ public class Font {
             glyph.v = glyph.y / height;
             glyph.u2 = (glyph.x / width) + (glyph.width / width);
             glyph.v2 = (glyph.y / height) + (glyph.height / height);
-
 
         }
     }

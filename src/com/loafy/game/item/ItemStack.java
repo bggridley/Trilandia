@@ -31,7 +31,7 @@ public class ItemStack {
     }
 
     public void drop(World world, float x, float y, float dx, float dy, boolean time) {
-        for(int i = 0; i < amount; i++)
+        for (int i = 0; i < amount; i++)
             item.drop(world, x, y, dx, dy, time);
     }
 
@@ -56,7 +56,7 @@ public class ItemStack {
         this.amount = amount;
     }
 
-    public int getMaxStackSize () {
+    public int getMaxStackSize() {
         return maxStackSize;
     }
 }

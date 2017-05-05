@@ -4,16 +4,10 @@ import com.loafy.game.gfx.Font;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.GuiDeleteWorld;
-import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.world.data.WorldData;
 import org.newdawn.slick.Color;
 
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class GuiWorldButton extends GuiButton {
 

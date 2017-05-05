@@ -15,6 +15,6 @@ public class GuiDeleteWorld extends GuiPrompt {
 
     public void accept() {
         WorldLoader.delete(worldSlot);
-        ((MenuState)state).guiPlay.updateWorlds();
+        ((MenuState) state).guiPlay.updateWorlds();
     }
 }

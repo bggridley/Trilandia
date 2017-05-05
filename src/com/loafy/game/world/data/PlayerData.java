@@ -7,7 +7,7 @@ public class PlayerData {
     public int spawnX;
     public int spawnY;
 
-    public PlayerData () {
+    public PlayerData() {
 
     }
 

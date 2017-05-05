@@ -18,7 +18,7 @@ public class GuiMainMenu extends Gui {
 
             public void action() {
                 super.action();
-               state.setCurrentGui(state.guiPlay);
+                state.setCurrentGui(state.guiPlay);
             }
         };
 

@@ -1,6 +1,5 @@
 package com.loafy.game.state.gui.objects;
 
-import com.loafy.game.Main;
 import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Graphics;
 import com.loafy.game.input.InputManager;
@@ -8,8 +7,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import util.KeyConversions;
-
-import static com.loafy.game.Main.delta;
 
 public class GuiTextbox extends GuiObject {
 
@@ -27,7 +24,7 @@ public class GuiTextbox extends GuiObject {
     }
 
     public void update(float delta) {
-        time+= delta;
+        time += delta;
         int k = InputManager.keyPressed();
         String key = KeyConversions.getKeyName(k);
         char keyChar = InputManager.keyPressedChar();
@@ -40,8 +37,8 @@ public class GuiTextbox extends GuiObject {
 
                 }
             } else if (k == Keyboard.KEY_BACK) {
-                if(text.length() != 0)
-                text = text.substring(0, text.length() - 1);
+                if (text.length() != 0)
+                    text = text.substring(0, text.length() - 1);
             }
         }
     }
@@ -56,7 +53,7 @@ public class GuiTextbox extends GuiObject {
     }
 
     public void renderUnderscore(float width) {
-        if(((int)time / 15 % 2 == 0)) {
+        if (((int) time / 15 % 2 == 0)) {
             String s = text.length() == maxLength ? "|" : "_";
             Font.renderString(s, x - 40 + width, y + 6, size, Color.black);
         }

@@ -1,14 +1,10 @@
 package com.loafy.game.item;
 
-import com.loafy.game.Main;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.input.InputManager;
-import com.loafy.game.item.Item;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
 
 import java.util.HashMap;
 
@@ -45,7 +41,7 @@ public abstract class Tool extends Item {
         float digSpeed = getSpeed(block.getMaterial()) * delta; //* (float) Main.UPS / (float) Main.FPS;
 
 
-        if(block.getMaterial().getBreakConditions(world, mx, my)) {
+        if (block.getMaterial().getBreakConditions(world, mx, my)) {
             if (Math.abs(x - mx) / Material.SIZE <= 4) {
                 if (Math.abs(y - my) / Material.SIZE <= 4) {
                     player.getController().setDugBlock(block);

@@ -6,17 +6,18 @@ import com.loafy.game.item.ItemBlock;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.item.Recipe;
 import com.loafy.game.item.material.ItemSmallStone;
+import com.loafy.game.item.material.ItemWood;
 import com.loafy.game.world.block.Material;
 
-public class RecipeStone extends Recipe {
+public class RecipeWood extends Recipe {
 
-    public RecipeStone(PlayerInventory inventory, CraftingList list) {
+    public RecipeWood(PlayerInventory inventory, CraftingList list) {
         super(inventory, list);
 
-        addIngredient(new ItemStack(new ItemSmallStone(), 2));
+        addIngredient(new ItemStack(new ItemWood(), 1));
     }
 
     public ItemStack result() {
-        return new ItemStack(new ItemBlock(Material.STONE), 1);
+        return new ItemStack(new ItemBlock(Material.WOOD), 4);
     }
 }

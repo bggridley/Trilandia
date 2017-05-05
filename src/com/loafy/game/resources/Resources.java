@@ -3,7 +3,6 @@ package com.loafy.game.resources;
 import com.loafy.game.gfx.*;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.newdawn.slick.opengl.ImageDataFactory;
 import org.newdawn.slick.opengl.LoadableImageData;

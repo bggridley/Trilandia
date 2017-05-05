@@ -52,8 +52,8 @@ public class LineSmoother {
         avgY /= points.size();
         Point newPoint = new Point(avgX, avgY);
         Point oldPoint = (Point) points.get(points.size() / 2);
-        int newX = (int)(newPoint.getX() + oldPoint.getX()) / 2;
-        int newY = (int)(newPoint.getY() + oldPoint.getY()) / 2;
+        int newX = (int) (newPoint.getX() + oldPoint.getX()) / 2;
+        int newY = (int) (newPoint.getY() + oldPoint.getY()) / 2;
 
         return new Point(newX, newY);
     }

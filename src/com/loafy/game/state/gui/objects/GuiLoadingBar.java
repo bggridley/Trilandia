@@ -18,7 +18,7 @@ public class GuiLoadingBar extends GuiObject {
     private int step = 0;
     public String status = "";
 
-    public GuiLoadingBar (float y, String init, int steps) { // x is 0 because centering
+    public GuiLoadingBar(float y, String init, int steps) { // x is 0 because centering
         super(0, y);
 
         this.width = 512;
@@ -26,7 +26,7 @@ public class GuiLoadingBar extends GuiObject {
 
         this.status = init;
         this.maxLoadingSteps = steps;
-        this.maxLoadingLength = (int)width; // TODO
+        this.maxLoadingLength = (int) width; // TODO
         this.increment = maxLoadingLength / maxLoadingSteps;
     }
 
