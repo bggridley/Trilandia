@@ -6,6 +6,7 @@ import com.loafy.game.entity.Entity;
 import com.loafy.game.entity.EntityGoat;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Font;
+import com.loafy.game.gfx.Graphics;
 import com.loafy.game.gfx.Texture;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.resources.Resources;
@@ -47,6 +48,8 @@ public class World {
     private int width, height;
 
     Light playerlight;
+
+    private Color ambient = new Color(255, 226, 153, 12);
 
     public void initLists() {
         this.activeChunks = new ArrayList<>();
@@ -182,6 +185,7 @@ public class World {
             }
         }
 
+
         for (Entity entity : entities) {
             float light = lightMap.getLevel((int) entity.getX() / Material.SIZE, (int) entity.getY() / Material.SIZE);
             entity.render(xOffset, yOffset, light);
@@ -189,6 +193,9 @@ public class World {
 
         player.renderContainer();
 
+
+        Graphics.setColor(ambient);
+        Graphics.fillRect(0, 0, Display.getWidth(), Display.getHeight());
 
         float yStart = Display.getHeight() - 120;
         float fontHeight = 18f;

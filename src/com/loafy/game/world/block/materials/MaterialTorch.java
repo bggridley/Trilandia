@@ -14,7 +14,7 @@ public class MaterialTorch extends Material {
     }
 
     public float getLight() {
-        return 0.8f;
+        return 0.75f;
     }
 
     public boolean getPlaceConditions(World world, int blockX, int blockY) {

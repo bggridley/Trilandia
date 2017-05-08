@@ -35,6 +35,7 @@ public class Material {
     public static final int SIZE = size * scale;
 
     public static Material COPPER_ORE = new MaterialCopperOre();
+    public static Material SILVER_ORE = new MaterialSilverOre();
 
     public static Material DIRT_WALL = new Material(2 + 16, 85, 0f, true, true, WALL, "Dirt Wall");
     public static Material STONE_WALL = new Material(1 + 16, 750, 0f, true, true, WALL, "Stone Wall");

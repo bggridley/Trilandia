@@ -10,6 +10,7 @@ import util.LineSmoother;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -276,10 +277,14 @@ public class WorldGenerator {
     private void generateOre() {
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[0].length; y++) {
-                Block block = walls[x][y];
-                if (block.getMaterial() == Material.STONE_WALL) {
-                    if (random.nextInt(35 ^ 2) == 0) { // 1 in every 20 square blocks
-                        generateOre(x, y, 10, Material.COPPER_ORE);
+                Block block = blocks[x][y];
+                if (block.getMaterial() == Material.STONE) {
+                    if (random.nextInt(17 ^ 2) == 0) { // 1 in every 20 square blocks
+                        generateOre(x, y, 20, Material.COPPER_ORE);
+                    }
+
+                    if(random.nextInt(32 ^ 2) == 0) {
+                        generateOre(x, y, 26, Material.SILVER_ORE);
                     }
                 }
             }
@@ -289,10 +294,7 @@ public class WorldGenerator {
     private void generateOre(int x, int y, int size, Material material) {
         float csa = 0.675f;
        // float dec = (float) size - s
-        Block[][] plane = new Block[20][20];
-
-        int mid = size / 2;
-
+        Block[][] plane = new Block[size][size];
         for (int xx = 0; xx < plane.length; xx++) {
             for (int yy = 0; yy < plane[0].length; yy++) {
                 plane[xx][yy] = new Block(material, xx * Material.SIZE, yy * Material.SIZE);
@@ -315,12 +317,11 @@ public class WorldGenerator {
                 Material mat = block.getMaterial();
 
                 if(mat.getID() == material.getID()) {
-                    int setX = x - (20 / 2) + xx;
-                    int setY = y - (20 / 2) + yy;
+                    int setX = x - (size / 2) + xx;
+                    int setY = y - (size / 2) + yy;
 
                     if(getBlock(blocks, setX, setY) != null && getBlock(blocks, setX, setY).getMaterial() == Material.STONE) {
                         setBlock(blocks, material, setX, setY);
-                        System.out.println("actually worked: " + setX + "," + setY + "... part of " + x + ", " + y);
                     }
                 }
             }

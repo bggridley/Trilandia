@@ -7,6 +7,7 @@ import com.loafy.game.state.GameState;
 import com.loafy.game.state.IngameState;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.world.block.Materials;
+import org.apache.commons.io.FileUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;

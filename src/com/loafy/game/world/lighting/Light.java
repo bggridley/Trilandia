@@ -24,7 +24,7 @@ public class Light {
     protected void update(int currentx, int currenty, float lastLight, boolean up, boolean down, boolean left, boolean right) {
         if (!enabled) return;
         if (currentx < 0 || currentx > map.width - 1 || currenty < 0 || currenty > map.height) return;
-        float newLight = lastLight - (map.getDecrement(currentx, currenty) * lightLevel);
+        float newLight = lastLight - (map.getDecrement(currentx, currenty) * (1 + (1 - lightLevel)));
         if (newLight <= map.getLevel(currentx, currenty)) return;
 
         map.setLevel(currentx, currenty, newLight);

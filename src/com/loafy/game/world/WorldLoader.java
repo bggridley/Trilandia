@@ -23,7 +23,7 @@ public class WorldLoader {
             }
         }
 
-        return dir.delete(); // The directory is empty now and can be deleted.
+        return dir.delete();
     }
 
     public static void delete(int worldSlot) {

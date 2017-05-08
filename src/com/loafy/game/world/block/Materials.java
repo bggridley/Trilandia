@@ -19,6 +19,7 @@ public class Materials {
         materials.add(Material.WOOD);
         materials.add(Material.WOOD_WALL);
         materials.add(Material.COPPER_ORE);
+        materials.add(Material.SILVER_ORE);
 
         materials.add(Material.TORCH);
     }
