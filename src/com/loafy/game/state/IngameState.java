@@ -1,6 +1,5 @@
 package com.loafy.game.state;
 
-import com.google.gson.Gson;
 import com.loafy.game.Main;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.SpriteSheet;
@@ -8,13 +7,10 @@ import com.loafy.game.gfx.Texture;
 import com.loafy.game.input.Controls;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.state.gui.*;
-import com.loafy.game.world.Chunk;
 import com.loafy.game.world.World;
 import com.loafy.game.world.WorldGenerator;
 import com.loafy.game.world.WorldLoader;
-import com.loafy.game.world.block.Block;
-import com.loafy.game.world.data.LightMapData;
-import com.loafy.game.world.data.PlayerData;
+import com.loafy.game.world.data.LevelData;
 import com.loafy.game.world.data.WorldData;
 
 public class IngameState extends Container implements GameState {
@@ -55,49 +51,13 @@ public class IngameState extends Container implements GameState {
                 }
 
                 WorldGenerator generator = new WorldGenerator(width, height);
-                Block[][] blocks = generator.getBlocks();
-                Block[][] walls = generator.getWalls();
-                Chunk[][] chunks = new Chunk[width / Chunk.SIZE][height / Chunk.SIZE];
+                generator.setName(worldName);
 
-                /**
-                 * Creating chunks out of generated blocks
-                 */
+                WorldLoader.save(new WorldData(generator), fileName, "world.dat");
+                WorldLoader.save(new LevelData(generator), fileName, "level.dat");
 
-                for (int x = 0; x < chunks.length; x++) {
-                    for (int y = 0; y < chunks[0].length; y++) {
-                        int xx = x * Chunk.SIZE;
-                        int yy = y * Chunk.SIZE;
-                        Block[][] chunkBlocks = new Block[Chunk.SIZE][Chunk.SIZE];
-                        Block[][] chunkWalls = new Block[Chunk.SIZE][Chunk.SIZE];
-
-                        for (int i = 0; i < Chunk.SIZE; i++) {
-                            for (int j = 0; j < Chunk.SIZE; j++) {
-                                chunkBlocks[i][j] = blocks[xx + i][yy + j];
-                                chunkWalls[i][j] = walls[xx + i][yy + j];
-                            }
-                        }
-
-                        chunks[x][y] = new Chunk(chunkBlocks, chunkWalls, x, y);
-                    }
-                }
-
-                /**
-                 * Save chunks to file as first time
-                 */
-
-
-                for (int x = 0; x < chunks.length; x++) {
-                    for (int y = 0; y < chunks[0].length; y++) {
-                        Gson gson = new Gson();
-                        WorldLoader.saveChunk(fileName, chunks[x][y], gson); //todo make sure
-                    }
-                }
-
-
-                world = new World(fileName, worldName, generator);
-                WorldLoader.save(world.getData(), fileName, "world.dat");
-                WorldLoader.save(world.getPlayer().getData(), fileName, "player.dat");
-                WorldLoader.save(world.getLightMap().getData(), fileName, "light.dat");
+                world = new World(fileName, (WorldData) WorldLoader.load(WorldData.class, fileName, "world.dat"), (LevelData) WorldLoader.load(LevelData.class, fileName, "level.dat")); //todo
+                //WorldLoader.save(world.getData(), fileName, "world.dat");
                 generated = true;
 
                 Main.setState(GameState.INGAME);
@@ -118,12 +78,12 @@ public class IngameState extends Container implements GameState {
                     e.printStackTrace();
                 }
 
-                world = new World(fileName, (WorldData) WorldLoader.load(WorldData.class, fileName, "world.dat"), (PlayerData) WorldLoader.load(PlayerData.class, fileName, "player.dat"), (LightMapData) WorldLoader.load(LightMapData.class, fileName, "light.dat"));
+                world = new World(fileName, (WorldData) WorldLoader.load(WorldData.class, fileName, "world.dat"), (LevelData) WorldLoader.load(LevelData.class, fileName, "level.dat"));
                 loaded = true;
 
                 Main.setState(GameState.INGAME);
                 setCurrentGui(null);
-                Thread.currentThread().interrupt();
+               //Thread.currentThread().interrupt();
             }
         }).start();
     }

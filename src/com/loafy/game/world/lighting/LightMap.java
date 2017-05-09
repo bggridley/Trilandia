@@ -1,9 +1,7 @@
 package com.loafy.game.world.lighting;
 
 import com.loafy.game.world.World;
-import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
-import com.loafy.game.world.data.LightMapData;
 
 import java.util.ArrayList;
 
@@ -62,28 +60,30 @@ public class LightMap {
 
                 if (x < 1 || x > lightLevels.length - 1 || y < 1 || y > lightLevels.length - 1) continue;
 
-                Block block = world.getBlock(x * Material.SIZE, y * Material.SIZE);
+                int block = world.getBlock(x, y);
 
-                Block left = world.getBlock((x - 1) * Material.SIZE, y * Material.SIZE);
-                Block right = world.getBlock((x + 1) * Material.SIZE, y * Material.SIZE);
-                Block top = world.getBlock(x * Material.SIZE, (y - 1) * Material.SIZE);
-                Block bottom = world.getBlock(x * Material.SIZE, (y + 1) * Material.SIZE);
+                int left = world.getBlock((x - 1), y );
+                int right = world.getBlock((x + 1) , y );
+                int top = world.getBlock(x , (y - 1) );
+                int bottom = world.getBlock(x, (y + 1) );
 
-                Block wall = world.getWall(x * Material.SIZE, y * Material.SIZE);
+                int wall = world.getWall(x, y);
 
-                if (block == null) continue;
+                if (block == -1) continue;
 
-                if (left != null && right != null && top != null && bottom != null) {
-                    if (left.getMaterial() == Material.AIR && right.getMaterial() == Material.AIR && top.getMaterial() == Material.AIR && bottom.getMaterial() == Material.AIR)
-                        continue; // checks if all surroundings are air, so its pointless xd
+                if (left != -1 && right != -1 && top != -1 && bottom != -1) {
+                    if (left == Material.AIR.getID() && right == Material.AIR.getID() && top == Material.AIR.getID() && bottom == Material.AIR.getID())
+                        continue;
 
                 }
-//                if(block.getMaterial() == Material.AIR && wall.getMaterial() == Material.AIR || block.getMaterial().isPassable()) {
-                if ((block.getMaterial() == Material.AIR || block.getMaterial().isPassable()) && wall.getMaterial() == Material.AIR) {
-                    sunlight.setX(x);
-                    sunlight.setY(y);
 
-                    sunlight.update(x, y, sunlight.getLightLevel());
+                if(block == Material.AIR.getID() && wall == Material.AIR.getID() || Material.fromID(block).isPassable()) {
+                    if ((block == Material.AIR.getID() || Material.fromID(block).isPassable()) && wall == Material.AIR.getID()) {
+                        sunlight.setX(x);
+                        sunlight.setY(y);
+
+                        sunlight.update(x, y, sunlight.getLightLevel());
+                    }
                 }
             }
         }
@@ -97,11 +97,6 @@ public class LightMap {
     public void addLight(Light light) {
         lights.add(light);
     }
-
-    public LightMapData getData() {
-        return new LightMapData(this);
-    }
-
 
     protected void setLevel(int x, int y, float level) {
         lightLevels[x][y] = level;

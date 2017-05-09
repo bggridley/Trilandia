@@ -41,6 +41,8 @@ public class Main {
 
     private static Drawable drawable;
 
+    //private int[][] tia;
+
     public static void main(String args[]) {
         initResources();
         new Main();
@@ -117,6 +119,14 @@ public class Main {
     }
 
     public void init() {
+      /*  tia = new int[2000][1000];
+
+        for(int x = 0; x < tia.length; x++) {
+            for (int y = 0; y < tia[0].length; y++) {
+                tia[x][y] = 3;
+            }
+        }*/
+
         initOpenGl();
         Resources.init();
         KeyConversions.init();

@@ -93,7 +93,6 @@ public class Block {
 
         destroyClear(world, this);
 
-
         world.blockChange((int) this.getX(), (int) this.getY());
     }
 

@@ -51,8 +51,6 @@ public class GuiPaused extends Gui {
                 Main.setState(GameState.MENU);
                 Main.menuState.setCurrentGui(Main.menuState.guiMainMenu);
 
-                World world = state.getWorld();
-                WorldLoader.save(world.getData(), world.fileName, "world.dat");
                 state.getWorld().unload();
 
                 Main.ingameState = new IngameState();

@@ -145,9 +145,9 @@ public class Material {
     }
 
     public boolean getBreakConditions(World world, int blockX, int blockY) {
-        Block above = world.getBlock(blockX, blockY - SIZE);
+        int above = world.getBlock(blockX, blockY - 1);
 
-        if (above.getMaterial() == Material.LOG && this != Material.LOG) return false;
+        if (above == Material.LOG.getID() && this != Material.LOG) return false;
 
         return true;
     }

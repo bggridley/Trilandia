@@ -2,9 +2,6 @@ package com.loafy.game.world;
 
 import com.google.gson.Gson;
 import com.loafy.game.resources.Resources;
-import com.loafy.game.world.block.Block;
-import com.loafy.game.world.block.Material;
-import com.loafy.game.world.data.ChunkData;
 
 import java.io.File;
 import java.io.FileReader;
@@ -35,8 +32,10 @@ public class WorldLoader {
 
     public static void save(Object data, String worldFileName, String fileName) {
         try {
+            String wldPath = WorldLoader.getWorldPath(worldFileName);
+            new File(wldPath).mkdirs();
             Gson gson = new Gson();
-            FileWriter writer = new FileWriter(WorldLoader.getWorldPath(worldFileName) + "/" + fileName);
+            FileWriter writer = new FileWriter(wldPath + "/" + fileName);
             gson.toJson(data, writer);
             writer.flush();
         } catch (Exception e) {
@@ -107,7 +106,7 @@ public class WorldLoader {
         }
     }*/
 
-    public static Chunk fetchChunk(String fileName, int chunkX, int chunkY) {
+   /* public static Chunk fetchChunk(String fileName, int chunkX, int chunkY) {
         try {
             Gson gson = new Gson();
             FileReader reader = new FileReader(WorldLoader.getWorldPath(fileName) + "/chunkData/chunk" + chunkX + "," + chunkY);
@@ -155,7 +154,7 @@ public class WorldLoader {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     protected static String getWorldPath(String worldName) {
         return Resources.gameLocation + "/saves/" + worldName;

@@ -23,7 +23,7 @@ public class MaterialLog extends Material {
 
         outer:
         for (int i = 1; i < 50; i++) {
-            Block block = world.getBlock(blockX, blockY - (i * Material.SIZE));
+            Block block = world.getBlockFromChunks(blockX, blockY - (i * Material.SIZE));
 
             if (block == null) continue;
 
@@ -36,7 +36,7 @@ public class MaterialLog extends Material {
 
                 for (int j = 0; j < 3; j++) {
                     for (int k = 0; k < 3; k++) {
-                        Block leafblock = world.getBlock(blockX + (j * Material.SIZE), blockY + (k * Material.SIZE));
+                        Block leafblock = world.getBlockFromChunks(blockX + (j * Material.SIZE), blockY + (k * Material.SIZE));
                         if (leafblock.getMaterial() == Material.LEAF) {
                             block.destroyClear(world, leafblock);
                         } else {

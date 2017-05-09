@@ -59,14 +59,14 @@ public class Item {
         int mx = (int) (InputManager.mouseX + player.getWorld().xOffset);
         int my = (int) (InputManager.mouseY + player.getWorld().yOffset);
 
-        player.getWorld().getBlock(mx, my).clickLeft(player);
+        player.getWorld().getBlockFromChunks(mx, my).clickLeft(player);
     }
 
     public void useRight(EntityPlayer player, float delta) {
         int mx = (int) (InputManager.mouseX + player.getWorld().xOffset);
         int my = (int) (InputManager.mouseY + player.getWorld().yOffset);
 
-        player.getWorld().getBlock(mx, my).clickRight(player);
+        player.getWorld().getBlockFromChunks(mx, my).clickRight(player);
     }
 
     public String getName() {

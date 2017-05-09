@@ -1,7 +1,6 @@
 package com.loafy.game.world;
 
 import com.loafy.game.world.block.Block;
-import com.loafy.game.world.data.ChunkData;
 
 
 public class Chunk {
@@ -41,10 +40,6 @@ public class Chunk {
 
     public int getChunkY() {
         return chunkY;
-    }
-
-    public ChunkData getData() {
-        return new ChunkData(this);
     }
 
 }

@@ -176,7 +176,7 @@ public class EntityPlayer extends EntityLiving {
         if (!canPlace(material, mx, my))
             return;
 
-        Block block = world.createBlock(material, world.getBlockX(mx) * Material.SIZE, world.getBlockY(my) * Material.SIZE);
+        Block block = world.createBlock(material.getID(), world.getBlockX(mx) * Material.SIZE, world.getBlockY(my) * Material.SIZE);
 
         float x = block.getX();
         float y = block.getY();
@@ -194,10 +194,10 @@ public class EntityPlayer extends EntityLiving {
 
         switch (material.getType()) {
             case BLOCK:
-                world.setBlock(block, (int) x, (int) y);
+                world.setBlockFromChunks(block, (int) x, (int) y);
                 break;
             case WALL:
-                world.setWall(block, (int) x, (int) y);
+                world.setWallFromChunks(block, (int) x, (int) y);
                 break;
         }
     }
@@ -206,8 +206,8 @@ public class EntityPlayer extends EntityLiving {
         int blockX = world.getBlockX(mx) * Material.SIZE; //todo this isn't blockX this is the block position relative to the world
         int blockY = world.getBlockY(my) * Material.SIZE;
 
-        Block block = world.getBlock(blockX, blockY);
-        Block wall = world.getWall(blockX, blockY);
+        Block block = world.getBlockFromChunks(blockX, blockY);
+        Block wall = world.getWallFromChunks(blockX, blockY);
 
         boolean conditions = m.getPlaceConditions(world, blockX, blockY);
 

@@ -33,10 +33,10 @@ public abstract class Tool extends Item {
         int mx = (int) (InputManager.mouseX + world.xOffset);
         int my = (int) (InputManager.mouseY + world.yOffset);
 
-        Block block = world.getBlock(mx, my);
+        Block block = world.getBlockFromChunks(mx, my);
 
         if (block.getMaterial() == Material.AIR)
-            block = world.getWall(mx, my);
+            block = world.getWallFromChunks(mx, my);
 
         float digSpeed = getSpeed(block.getMaterial()) * delta; //* (float) Main.UPS / (float) Main.FPS;
 

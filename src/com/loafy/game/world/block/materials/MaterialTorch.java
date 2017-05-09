@@ -14,11 +14,11 @@ public class MaterialTorch extends Material {
     }
 
     public float getLight() {
-        return 0.75f;
+        return 0.92f;
     }
 
     public boolean getPlaceConditions(World world, int blockX, int blockY) {
-        Block wall = world.getWall(blockX, blockY);
+        Block wall = world.getWallFromChunks(blockX, blockY);
 
         if(wall.getMaterial() == Material.AIR) return false;
 

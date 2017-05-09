@@ -149,15 +149,15 @@ public class Entity {
         int bottomTile = (int) y + (int) width;
 
         try {
-            topLeft = !world.getBlock(leftTile, topTile).getMaterial().isPassable();
-            topRight = !world.getBlock(rightTile, topTile).getMaterial().isPassable();
-            midLeft = !world.getBlock(leftTile, midTile).getMaterial().isPassable();
-            midRight = !world.getBlock(rightTile, midTile).getMaterial().isPassable();
-            bottomLeft = !world.getBlock(leftTile, bottomTile).getMaterial().isPassable();
-            bottomRight = !world.getBlock(rightTile, bottomTile).getMaterial().isPassable();
+            topLeft = !world.getBlockFromChunks(leftTile, topTile).getMaterial().isPassable();
+            topRight = !world.getBlockFromChunks(rightTile, topTile).getMaterial().isPassable();
+            midLeft = !world.getBlockFromChunks(leftTile, midTile).getMaterial().isPassable();
+            midRight = !world.getBlockFromChunks(rightTile, midTile).getMaterial().isPassable();
+            bottomLeft = !world.getBlockFromChunks(leftTile, bottomTile).getMaterial().isPassable();
+            bottomRight = !world.getBlockFromChunks(rightTile, bottomTile).getMaterial().isPassable();
 
-            Block bottomLeftBlock = world.getBlock(leftTile, bottomTile);
-            Block bottomRightBlock = world.getBlock(rightTile, bottomTile);
+            Block bottomLeftBlock = world.getBlockFromChunks(leftTile, bottomTile);
+            Block bottomRightBlock = world.getBlockFromChunks(rightTile, bottomTile);
 
             if (bottomLeftBlock.getMaterial().getID() == Material.AIR.getID() || bottomRightBlock.getMaterial().getID() == Material.AIR.getID()) {
                 blockFriction = airFriction;

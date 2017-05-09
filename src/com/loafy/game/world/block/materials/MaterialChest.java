@@ -15,7 +15,7 @@ public class MaterialChest extends Material {
     }
 
     public boolean getPlaceConditions(World world, int blockX, int blockY) {
-        Block down = world.getBlock(blockX, blockY + SIZE);
+        Block down = world.getBlockFromChunks(blockX, blockY + SIZE);
         if (down.getMaterial().isPassable() || down.getMaterial() == Material.CHEST) return false;
 
         return true;
