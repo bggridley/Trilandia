@@ -1,15 +1,18 @@
 package com.loafy.game.state;
 
+import com.loafy.game.Main;
+import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Texture;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.gui.*;
+
+import java.awt.*;
 
 public class MenuState extends Container implements GameState {
 
     private Texture background;
     public GuiMainMenu guiMainMenu;
     public GuiGeneratingWorld guiGeneratingWorld;
-    public GuiChooseWorld guiSelectWorld;
     public GuiLoadingWorld guiLoadingWorld;
     public GuiControls guiControls;
     public GuiVideoSettings guiVideoSettings;
@@ -33,7 +36,6 @@ public class MenuState extends Container implements GameState {
         this.guiAudioSettings = new GuiAudioSettings(this, guiMainMenu);
         this.guiPlay = new GuiPlay(this, guiMainMenu);
         this.guiGenerateWorldOptions = new GuiGenerateWorldOptions(this, guiPlay);
-        this.guiSelectWorld = new GuiChooseWorld(this, guiPlay);
 
         setCurrentGui(guiMainMenu);
     }
@@ -63,6 +65,8 @@ public class MenuState extends Container implements GameState {
         background.render(0, 0);
 
         super.render();
+
+        Font.renderString(String.valueOf(Main.time), 0, 0, 1, Color.WHITE);
     }
 
     public void setScrollingBackground(boolean b) {

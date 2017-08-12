@@ -2,7 +2,9 @@ package com.loafy.game.world.data;
 
 import com.loafy.game.world.WorldBase;
 
-public class LevelData {
+import java.io.Serializable;
+
+public class LevelData implements Serializable {
 
     public int[][] blocks;
     public int[][] walls;

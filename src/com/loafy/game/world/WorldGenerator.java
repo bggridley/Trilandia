@@ -1,16 +1,18 @@
 package com.loafy.game.world;
 
 import com.loafy.game.Main;
+import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.objects.GuiLoadingBar;
-import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
+import com.loafy.game.world.block.Materials;
 import com.loafy.game.world.lighting.LightMap;
 import util.LineSmoother;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.math.BigInteger;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,13 +28,18 @@ public class WorldGenerator extends WorldBase {
     public LightMap lightMap;
 
     private final float cs = 0.76f;
-    private final float ce = 0.505f;
+    private final float ce = 0.5075f;
     private final int progressionBlocks = 28;
 
-    private final int dirtAmount = 12;
+    private final int dirtAmount = 5;
     private final int stoneAmount = 16;
 
-    private final float iterations = 7;
+    private final float iterations = 3;
+
+
+    private final int overworldHeight = 1250;
+    private final int ceriseHeight = 650;
+    private final int lazulineHeight = 650;
 
     private MenuState menuState = Main.menuState;
     private GuiLoadingBar loadingBar;
@@ -50,6 +57,16 @@ public class WorldGenerator extends WorldBase {
 
         loadingBar = menuState.guiGeneratingWorld.getLoadingBar();
 
+
+
+
+
+        //generateOre();
+
+
+    }
+
+    public void generate() {
         for (int x = 0; x < walls.length; x++) {
             for (int y = 0; y < walls[0].length; y++) {
                 this.walls[x][y] = Material.AIR.getID();
@@ -62,24 +79,69 @@ public class WorldGenerator extends WorldBase {
             }
         }
 
-        generateLines();
-        generateCaves();
-        generateTerrain();
-        generateOre();
+        generateLines(0);
+        generateCaves(Material.DIRT, Material.DIRT_WALL, Material.STONE, Material.STONE_WALL);
+        generateTerrain(overworldHeight, Material.GRASS);
+
+        spawnX = blocks.length / 2;
+        spawnY = topBlocks[blocks.length / 2] - 3;
+
+
+        saveImage("start");
+
+        generateLines(150 + overworldHeight);
+        generateCaves(Material.DIRT, Material.DIRT_WALL, Material.CERISE_STONE, Material.STONE_WALL);
+        generateTerrain(ceriseHeight, Material.GRASS);
+
+        generateLines(overworldHeight + ceriseHeight + 300);
+        generateCaves(Material.DIRT, Material.DIRT_WALL, Material.CERISE_STONE, Material.STONE_WALL);
+        generateTerrain(lazulineHeight, Material.GRASS);
+
+
+
+        saveImage("end");
+    }
+
+    public void saveImage(String name) {
+        BufferedImage image = new BufferedImage(blocks.length, blocks[0].length, BufferedImage.TYPE_INT_RGB);
+
+        for (int x = 0; x < blocks.length; x++) {
+            for (int y = 0; y < blocks[0].length; y++) {
+
+
+                if(blocks[x][y] != Material.AIR.getID())
+                    image.setRGB(x, y, Materials.getID(blocks[x][y]).getColor().getRGB());
+            }
+        }
+
+        for (int x = 0; x < walls.length; x++) {
+            for (int y = 0; y < walls[0].length; y++) {
+
+
+
+                if(walls[x][y] != Material.AIR.getID() && blocks[x][y] == Material.AIR.getID())
+                    image.setRGB(x, y, Materials.getID(walls[x][y]).getColor().getRGB());
+            }
+        }
+
+        try {
+            ImageIO.write(image, "PNG", new File(Resources.gameLocation + "/" + name + ".png"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
-    public void generateLines() {
+    public void generateLines(int mh) {
         loadingBar.setStatus("Generating terrain structure.");
 
         try {
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-            int iterations = 8;
+            int iterations = 9;
             float threshold = 5F;
-            float decay = 0.7F;
-            int mh = 100;
-            int sh = mh + random.nextInt(50);
+            float decay = 0.85F;
+            int sh = 150 + mh;
             List<javafx.scene.shape.Line> lines = new ArrayList<>();
             lines.add(new javafx.scene.shape.Line(0.0F, sh, width, sh));
             for (int i = 0; i < iterations; i++) {
@@ -93,7 +155,7 @@ public class WorldGenerator extends WorldBase {
                     float eX = (float) (int) line.getEndX();
                     float eY = (float) (int) line.getEndY();
                     float mX = (sX + eX) / 2.0F;
-                    float rY = 29.0F * threshold * (random.nextFloat() - 0.5F);
+                    float rY = 10.0f * threshold * (random.nextFloat() - 0.5F);
 
                     add.add(new javafx.scene.shape.Line(sX, sY, mX, sY + rY));
                     add.add(new javafx.scene.shape.Line(mX, sY + rY, eX, eY));
@@ -125,7 +187,7 @@ public class WorldGenerator extends WorldBase {
         }
     }
 
-    public void generateTerrain() {
+    public void generateTerrain (int depth, Material grass) {
         try {
             this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         } catch (Exception e) {
@@ -137,14 +199,9 @@ public class WorldGenerator extends WorldBase {
 
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[0].length; y++) {
-                int block = blocks[x][y];
                 if (y == topBlocks[x]) {
 
-                    for (int i = 0; i < y; i++) {
-                        blocks[x][i] = Material.AIR.getID();
-                    }
-
-                    blocks[x][y] = Material.GRASS.getID();
+                    blocks[x][y] = grass.getID();
                     break;
                 }
             }
@@ -159,6 +216,16 @@ public class WorldGenerator extends WorldBase {
                 if (y == topBlocks[x]) {
                     lastTree = createTree(lastTree, x, y);
                     break;
+                }
+            }
+        }
+
+        for (int x = 0; x < blocks.length; x++) {
+            int add = random.nextInt(4);
+            for (int y = 0; y < blocks[0].length; y++) {
+                if (y > topBlocks[x] + depth + add) {
+                    blocks[x][y] = Material.AIR.getID();
+                    walls[x][y] = Material.AIR.getID();
                 }
             }
         }
@@ -190,28 +257,36 @@ public class WorldGenerator extends WorldBase {
         return lastTree;
     }
 
-    public void generateCaves() {
+    public void generateCaves(Material dirt, Material dirt_wall, Material stone, Material stone_wall) {
         loadingBar.setStatus("Generating caves.");
 
         float dif = (ce - cs) / progressionBlocks; //increment from each block
 
+        //saveImage("1");
+
         for (int x = 0; x < blocks.length; x++) {
             float csa = cs;
             for (int y = 0; y < blocks[x].length; y++) {
-                blocks[x][y] = Material.DIRT.getID();
+
                 if (y > topBlocks[x] && y < topBlocks[x] + progressionBlocks) {
                     csa += dif;
                 }
 
-                if (random.nextFloat() <= csa)
-                    blocks[x][y] = Material.STONE.getID();
-                else
-                    blocks[x][y] = Material.AIR.getID();
+
+                if(y > topBlocks[x]) {
+                    if (random.nextFloat() <= csa)
+                        blocks[x][y] = stone.getID();
+                    else
+                        blocks[x][y] = Material.AIR.getID();
+                }
+
             }
         }
 
+        //saveImage("2");
+
         for (int i = 0; i < iterations; i++) {
-            refine(blocks, Material.STONE, Material.AIR);
+            refine(blocks, stone, Material.AIR);
             loadingBar.setStatus("Generating caves.");
         }
 
@@ -220,22 +295,17 @@ public class WorldGenerator extends WorldBase {
             for (int y = 0; y < blocks[x].length; y++) {
                 if (y == topBlocks[x]) {
 
-                    if (x == blocks.length / 2) {
-                        spawnX = x;
-                        spawnY = y - 3;
-                    }
-
                     for (int i = 2; i < height - y; i++) {
-                        walls[x][y + i] = Material.STONE_WALL.getID();
+                        walls[x][y + i] = stone_wall.getID();
                     }
 
                     for (int i = 0; i < stoneAmount; i++) {
-                        blocks[x][y + i] = Material.STONE.getID();
+                        blocks[x][y + i] = stone.getID();
                     }
 
-                    for (int i = 0; i < dirtAmount; i++) {
-                        blocks[x][y + i] = Material.DIRT.getID();
-                        walls[x][y + i + 2] = Material.DIRT_WALL.getID();
+                   for (int i = 0; i < dirtAmount; i++) {
+                        blocks[x][y + i] = dirt.getID();
+                        walls[x][y + i + 2] = dirt_wall.getID();
                     }
 
                     break;
@@ -244,19 +314,27 @@ public class WorldGenerator extends WorldBase {
         }
 
 
+       // saveImage("3");
     }
 
     private void generateOre() {
         for (int x = 0; x < blocks.length; x++) {
             for (int y = 0; y < blocks[0].length; y++) {
                 int block = blocks[x][y];
-                if (block == Material.STONE.getID()) {
-                    if (random.nextInt(17 ^ 2) == 0) { // 1 in every 20 square blocks
-                        generateOre(x, y, 20, Material.COPPER_ORE);
+                if (block == Material.STONE.getID() || walls[x][y] == Material.STONE_WALL.getID()) {
+
+                    float chance = 0f;
+
+                    if (block == Material.AIR.getID() && (getBlock(x - 1, y) == Material.STONE.getID() || getBlock(x + 1, y) == Material.STONE.getID() || getBlock(x, y - 1) == Material.STONE.getID() || getBlock(x, y + 1) == Material.STONE.getID()))
+                        chance = 3f;
+
+                    if (random.nextInt(41 ^ 2) <= chance) { // 1 in every 20 square blocks
+                        generateOre(x, y, 22, Material.SILVER_ORE);
                     }
 
-                    if(random.nextInt(32 ^ 2) == 0) {
-                        generateOre(x, y, 26, Material.SILVER_ORE);
+                    if (random.nextInt(36 ^ 2) <= chance) {
+                        generateOre(x, y, 26, Material.COPPER_ORE);
+
                     }
                 }
             }
@@ -265,12 +343,12 @@ public class WorldGenerator extends WorldBase {
 
     private void generateOre(int x, int y, int size, Material material) {
         float csa = 0.675f;
-       // float dec = (float) size - s
+        // float dec = (float) size - s
         int[][] plane = new int[size][size];
         for (int xx = 0; xx < plane.length; xx++) {
             for (int yy = 0; yy < plane[0].length; yy++) {
                 plane[xx][yy] = material.getID();
-                if(random.nextFloat() <= csa)
+                if (random.nextFloat() <= csa)
                     plane[xx][yy] = Material.AIR.getID();
                 else
                     plane[xx][yy] = material.getID();
@@ -278,7 +356,7 @@ public class WorldGenerator extends WorldBase {
         }
 
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 5; i++) {
             refine(plane, Material.AIR, material);
         }
 
@@ -287,22 +365,25 @@ public class WorldGenerator extends WorldBase {
             for (int yy = 0; yy < plane[0].length; yy++) {
                 int block = plane[xx][yy];
 
-                if(block == material.getID()) {
+                if (block == material.getID()) {
                     int setX = x - (size / 2) + xx;
                     int setY = y - (size / 2) + yy;
 
-                    if(getBlock(blocks, setX, setY) == Material.STONE.getID()) {
+                    if (getBlock(blocks, setX, setY) == Material.STONE.getID()) {
                         setBlock(blocks, material, setX, setY);
                     }
                 }
             }
         }
+
+        plane = null;
         // alive = AIR, dead = COPPER/material
     }
 
     public void refine(int[][] array, Material alive, Material dead) {
         for (int x = 0; x < array.length; x++) {
             for (int y = 0; y < array[0].length; y++) {
+                if(y < topBlocks[x]) continue;
                 int nbs = getNeighbors(array, x, y, alive);
 
                 if (nbs > 4) {

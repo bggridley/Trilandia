@@ -11,7 +11,8 @@ import com.loafy.game.item.tool.*;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Material;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class Item {
 

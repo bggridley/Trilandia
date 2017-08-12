@@ -5,7 +5,8 @@ import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.state.gui.objects.GuiTextbox;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class GuiGenerateWorldOptions extends Gui {
 
@@ -27,7 +28,7 @@ public class GuiGenerateWorldOptions extends Gui {
 
         addButton(generateWorld);
 
-        textBox = new GuiTextbox(0, 200, 2, 23);
+        textBox = new GuiTextbox(200, 2, 23, 300, 30);
         textBox.setX((Display.getWidth() - 200f) / 2f);
     }
 
@@ -40,7 +41,7 @@ public class GuiGenerateWorldOptions extends Gui {
         super.render();
         textBox.render();
 
-        Font.renderCenteredString("World name:", 200 - 32, 2, Color.black);
+        Font.renderCenteredString("World name:", 200 - 32, 2, Color.BLACK);
     }
 
     public int getWorldSlot() {

@@ -12,6 +12,7 @@ import com.loafy.game.item.Tool;
 import com.loafy.game.item.container.Container;
 import com.loafy.game.item.container.ContainerSlot;
 import com.loafy.game.resources.Resources;
+import com.loafy.game.state.IngameState;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
@@ -20,8 +21,9 @@ import com.loafy.game.world.data.PlayerData;
 import com.loafy.game.world.lighting.Light;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.geom.Rectangle;
+
+import java.awt.*;
 
 
 public class EntityPlayer extends EntityLiving {
@@ -39,23 +41,21 @@ public class EntityPlayer extends EntityLiving {
      * The last direction that the player faced.
      */
 
-    public boolean lastDirection;
+    private boolean lastDirection;
 
     public int spawnX;
     public int spawnY;
 
+    public static float spawnRate = 69f;
+
     public EntityPlayer(World world, float x, float y) {
-        super(world, x, y);
+        super(world, x, y, 4 * Material.SIZE + 4);
 
         this.spawnX = (int) x / Material.SIZE;
         this.spawnY = (int) y / Material.SIZE;
 
         this.inventory = new PlayerInventory(this, 40);
         this.animation = Resources.playerAnimation;
-        this.animation.setType(Animation.LOOP);
-        this.animation.setInterval(8);
-        this.animation.setStart(0);
-        this.animation.setEnd(3);
 
         this.width = animation.getFrame().getWidth();
         this.height = animation.getFrame().getHeight();
@@ -67,16 +67,24 @@ public class EntityPlayer extends EntityLiving {
         this.maxStamina = 100F;
         this.stamina = maxStamina;
 
-        this.PADDING_LEFT = 26;
-        this.PADDING_RIGHT = 20;
+        this.PADDING_LEFT = 12;
+        this.PADDING_RIGHT = 12;
 
-        this.JUMP_START = -11F;
+        //JUMP HEIGHT IN PIXELS = JumpSpeed2/(2*Gravity)
 
         selectedItem = new ItemStack(new Item(), 0);
         controller = new PlayerController(this);
 
         world.addEntity(this);
         closeInventory(); // hotbar slots
+    }
+
+    public void damage(float delta) {
+        super.damage(delta);
+
+        if (damaged) {
+            IngameState.flashHearts();
+        }
     }
 
     public void move(float delta) {
@@ -90,7 +98,6 @@ public class EntityPlayer extends EntityLiving {
 
     public void update(float delta) {
         controller.update(delta);
-        handleAnimations(delta);
 
         inventory.update(this);
         if (activeContainer != null) {
@@ -120,6 +127,14 @@ public class EntityPlayer extends EntityLiving {
         }
 
         super.update(delta);
+        if (right && dx > 0)
+            lastDirection = false;
+
+        if(left && dx < 0)
+            lastDirection = true;
+
+            handleAnimations(delta);
+
     }
 
     public boolean isAnySelected() {
@@ -154,9 +169,9 @@ public class EntityPlayer extends EntityLiving {
                 int blockY = world.getBlockY(my);
 
                 if (canPlace(((ItemBlock) item).getMaterial(), mx, my))
-                    Resources.blocksSprite.getTexture(48).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
+                    Resources.breakingSprite.getTexture(0).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
                 else
-                    Resources.blocksSprite.getTexture(49).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
+                    Resources.breakingSprite.getTexture(1).render(blockX * Material.SIZE - xOffset, blockY * Material.SIZE - yOffset);
             }
         } else if (item instanceof Tool) {
             Color light = new Color(lightLevel, lightLevel, lightLevel);
@@ -189,7 +204,7 @@ public class EntityPlayer extends EntityLiving {
 
         float light = material.getLight();
         if (light != -1) {
-            world.getLightMap().addLight(new Light(world.getLightMap(), light, (int) x / Material.SIZE, (int) y / Material.SIZE));
+            world.getLightMap().addLight(new Light(world.getLightMap(), light, (int) x / Material.SIZE, (int) y / Material.SIZE, null));
         }
 
         switch (material.getType()) {
@@ -273,48 +288,24 @@ public class EntityPlayer extends EntityLiving {
             dx = 1;
 
         if (selectedItem != null) {
-            selectedItem.drop(getWorld(), getX() + 32 - 16, getY() + 16, 5f * dx, 5f, false);
+            selectedItem.drop(getWorld(), getX() + 32 - 16, getY() + 16, 5f * dx, -1f, false);
             selectedItem = new ItemStack(new Item(), 0);
         }
     }
 
     public void handleAnimations(float delta) {
-        int add = 0;
+        this.animation.setType(Animation.LOOP);
+        this.animation.setInterval(5f);
+        this.animation.setStart(1);
+        this.animation.setEnd(4);
 
-        //ContainerSlot selected = inventory.getSelected();
-        //if (selected != null && selected.getItemStack().getItem() instanceof Tool) //TODO
-        // add = 4;
-
-        if (right) {
-            lastDirection = false;
-
-            if (animation.getType() == Animation.STILL) {
-                animation.setType(Animation.LOOP);
-                animation.setFrame(add);
-            }
-
-            animation.setStart(+add);
-            animation.setEnd(3 + add);
-
-        } else if (left) {
-            lastDirection = true;
-
-            if (animation.getType() == Animation.STILL) {
-                animation.setType(Animation.LOOP);
-                animation.setFrame(8 + add);
-            }
-
-            animation.setStart(8 + add);
-            animation.setEnd(11 + add);
-        }
-
+        animation.setFlipped(lastDirection);
         if ((left && right) || (!left && !right)) {
             animation.setType(Animation.STILL);
-            if (lastDirection) animation.setFrame(11 + add);
-            else animation.setFrame(add);
+            animation.setFrame(0);
         }
 
-        animation.update();
+        animation.update(delta);
     }
 
     public Container getActiveContainer() {

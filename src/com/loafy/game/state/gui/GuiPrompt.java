@@ -3,7 +3,8 @@ package com.loafy.game.state.gui;
 import com.loafy.game.gfx.Font;
 import com.loafy.game.state.GameState;
 import com.loafy.game.state.gui.objects.GuiButton;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public abstract class GuiPrompt extends Gui {
 
@@ -26,7 +27,7 @@ public abstract class GuiPrompt extends Gui {
     public void render() {
         super.render();
 
-        Font.renderCenteredString(promptText, 300, 3f, Color.white);
+        Font.renderCenteredString(promptText, 300, 3f, Color.WHITE);
     }
 
     public abstract void accept();

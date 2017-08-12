@@ -3,6 +3,7 @@ package com.loafy.game.world.lighting;
 import com.loafy.game.world.World;
 import com.loafy.game.world.block.Material;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class LightMap {
@@ -11,6 +12,9 @@ public class LightMap {
 
     public ArrayList<Light> lights;
 
+    private int[][] lightRed;
+    private int[][] lightGreen;
+    private int[][] lightBlue;
     private float[][] lightLevels;
     private float[][] decrementValues;
 
@@ -18,20 +22,23 @@ public class LightMap {
 
     public int width, height;
 
-    public DirectionalLight sunlight;
+    public Light sunlight;
 
     public LightMap(int width, int height) {
         // this.lightMap = new LightBlock[width][height];
         this.lightLevels = new float[width][height];
         this.decrementValues = new float[width][height];
+        this.lightRed = new int[width][height];
+        this.lightGreen= new int[width][height];
+        this.lightBlue = new int[width][height];
         this.width = width;
         this.height = height;
-        this.sunlight = new DirectionalLight(this, 1f, 0, 0, true, true, true, true);
+        this.sunlight = new Light(this, 1f, 0, 0, new Color(0, 0, 25));
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 lightLevels[x][y] = 0f;
-                decrementValues[x][y] = DEFAULT;
+                decrementValues[x][y] = 0f;
                 //new LightBlock(0f, DEFAULT);
             }
         }
@@ -50,6 +57,9 @@ public class LightMap {
                 if (x < 0 || x > lightLevels.length || y < 0 || y > lightLevels.length) continue;
 
                 lightLevels[x][y] = 0f;
+                lightRed[x][y] = 0;
+                lightGreen[x][y] = 0;
+                lightBlue[x][y] = 0;
             }
         }
 
@@ -82,7 +92,8 @@ public class LightMap {
                         sunlight.setX(x);
                         sunlight.setY(y);
 
-                        sunlight.update(x, y, sunlight.getLightLevel());
+                        sunlight.setColor(world.getTimeColor());
+                        sunlight.update(x, y, world.getTimeLight() * world.getTimeDecay(), world.getTimeLight());
                     }
                 }
             }
@@ -90,12 +101,30 @@ public class LightMap {
 
 
         for (Light light : lights) {
-            light.update(light.getX(), light.getY(), light.getLightLevel());
+            light.update(light.getX(), light.getY(), light.getLightLevel(), light.getLightLevel());
         }
     }
 
     public void addLight(Light light) {
         lights.add(light);
+    }
+
+    public void setColor(int x, int y, int r, int g, int b) {
+        lightRed[x][y] = r;
+        lightGreen[x][y] = g;
+        lightBlue[x][y] = b;
+    }
+
+    public int getRed(int x, int y) {
+        return lightRed[x][y];
+    }
+
+    public int getGreen(int x, int y) {
+        return lightGreen[x][y];
+    }
+
+    public int getBlue(int x, int y) {
+        return lightBlue[x][y];
     }
 
     protected void setLevel(int x, int y, float level) {

@@ -4,8 +4,9 @@ import java.awt.image.BufferedImage;
 
 public class SpriteSheet {
 
-    public transient Texture[] textures;
-    public transient BufferedImage bi;
+    public Texture[] textures;
+    public BufferedImage[] bufferedImages;
+    public BufferedImage bi;
 
     public int rows, cols;
 
@@ -14,12 +15,14 @@ public class SpriteSheet {
         this.rows = rows;
         this.cols = cols;
         textures = new Texture[rows * cols];
+        bufferedImages = new BufferedImage[rows * cols];
         int width = bi.getWidth() / rows;
         int height = bi.getHeight() / cols;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                textures[(i * cols) + j] = Texture.loadTexture(bi.getSubimage(j * width, i * height, width, height));
+                textures[(j * cols) + i] = Texture.loadTexture(bi.getSubimage(i * width, j * height, width, height));
+                bufferedImages[(j * cols) + i] = bi.getSubimage(i * width, j * height, width, height);
             }
         }
     }
@@ -30,6 +33,10 @@ public class SpriteSheet {
 
     public int getHeight() {
         return bi.getHeight();
+    }
+
+    public BufferedImage getImage(int i) {
+        return bufferedImages[i];
     }
 
     public Texture getTexture(int i) {

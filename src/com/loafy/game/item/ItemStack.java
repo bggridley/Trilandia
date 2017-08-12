@@ -18,7 +18,8 @@ public class ItemStack {
 
     public void renderInContainer(float x, float y) {
         Texture texture = item.getTexture();
-        texture.render(x + ((ContainerSlot.SIZE - texture.getWidth()) / 2), y + ((ContainerSlot.SIZE - texture.getWidth()) / 2));
+
+        item.render(x + ((ContainerSlot.SIZE - texture.getWidth()) / 2), y + ((ContainerSlot.SIZE - texture.getWidth()) / 2));
     }
 
     public void addAmount(int amount) {

@@ -3,12 +3,18 @@ package com.loafy.game.entity;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
+import com.loafy.game.world.block.Material;
 import org.lwjgl.input.Keyboard;
 
 public class EntityGoat extends EntityLiving {
 
+    public EntityGoat() {
+
+    }
+
+
     public EntityGoat(World world, float x, float y) {
-        super(world, x, y);
+        super(world, x, y, 3 * Material.SIZE + 4);
 
         this.animation = Resources.goatAnimation;
         this.animation.setType(Animation.STILL);
@@ -20,11 +26,30 @@ public class EntityGoat extends EntityLiving {
         this.maxHealth = 50F;
         this.health = maxHealth;
 
-        this.PADDING_LEFT = 7;
-        this.PADDING_RIGHT = 4;
-        this.JUMP_START = -9F;
+        this.PADDING_LEFT = 32;
+        this.PADDING_RIGHT = 0;
 
         world.addEntity(this);
+    }
+
+    public boolean spawnConditions(World world, int x, int y) {
+        if(!super.spawnConditions(world, x, y)) return false;
+
+        if(world.getBlock(world.getBlocks(), x, y + 3) != Material.GRASS.getID()) return false;
+
+        return true;
+    }
+
+    public boolean despawnConditions(World world, int x, int y) {
+        return super.despawnConditions(world, x, y);
+    }
+
+    public EntityGoat newInstance(World world, float x, float y) {
+        return new EntityGoat(world, x, y);
+    }
+
+    public int getSpawnRate() {
+        return 150;
     }
 
     public void render(float xOffset, float yOffset, float lightLevel) {

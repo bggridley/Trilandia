@@ -3,8 +3,8 @@ package com.loafy.game.gfx;
 import com.loafy.game.resources.Resources;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;

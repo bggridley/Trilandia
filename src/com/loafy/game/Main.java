@@ -7,7 +7,6 @@ import com.loafy.game.state.GameState;
 import com.loafy.game.state.IngameState;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.world.block.Materials;
-import org.apache.commons.io.FileUtils;
 import org.lwjgl.LWJGLUtil;
 import org.lwjgl.Sys;
 import org.lwjgl.openal.AL;
@@ -41,7 +40,7 @@ public class Main {
 
     private static Drawable drawable;
 
-    //private int[][] tia;
+    public static float time;
 
     public static void main(String args[]) {
         initResources();
@@ -60,7 +59,6 @@ public class Main {
 
         init();
 
-
         int updates = 0;
         int frames = 0;
 
@@ -74,6 +72,8 @@ public class Main {
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
                 delta = getDelta();
+
+                time+= delta / constantInterval;
 
                 if (getState() != null)
                     getState().update(delta / constantInterval);
@@ -119,14 +119,6 @@ public class Main {
     }
 
     public void init() {
-      /*  tia = new int[2000][1000];
-
-        for(int x = 0; x < tia.length; x++) {
-            for (int y = 0; y < tia[0].length; y++) {
-                tia[x][y] = 3;
-            }
-        }*/
-
         initOpenGl();
         Resources.init();
         KeyConversions.init();

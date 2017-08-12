@@ -3,9 +3,7 @@ package com.loafy.game.world;
 import com.google.gson.Gson;
 import com.loafy.game.resources.Resources;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 
 public class WorldLoader {
 
@@ -33,11 +31,25 @@ public class WorldLoader {
     public static void save(Object data, String worldFileName, String fileName) {
         try {
             String wldPath = WorldLoader.getWorldPath(worldFileName);
+
+
             new File(wldPath).mkdirs();
+            System.out.println((new File(wldPath + "/" + fileName).createNewFile()));
+
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(wldPath + "/" + fileName));
+            oos.writeObject(data);
+
+            oos.flush();
+            oos.close();
+            /*
             Gson gson = new Gson();
             FileWriter writer = new FileWriter(wldPath + "/" + fileName);
             gson.toJson(data, writer);
             writer.flush();
+
+            writer.close();*/
+
+           // com.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,11 +57,13 @@ public class WorldLoader {
 
     public static Object load(Class clazz, String worldFileName, String fileName) {
         try {
-            Gson gson = new Gson();
+            /*Gson gson = new Gson();
             FileReader reader = new FileReader(WorldLoader.getWorldPath(worldFileName) + "/" + fileName);
             Object data = gson.fromJson(reader, clazz);
-            reader.close();
-            return data;
+            reader.close();*/
+
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(WorldLoader.getWorldPath(worldFileName) + "/" + fileName));
+            return ois.readObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;

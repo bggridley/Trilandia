@@ -3,7 +3,6 @@ package com.loafy.game.entity;
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.gfx.Animation;
 import com.loafy.game.world.World;
-import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
 import org.newdawn.slick.geom.Rectangle;
 
@@ -14,11 +13,12 @@ public class Entity {
 
     // CONSTANTS
 
-    protected final float GRAVITY = 0.65F;
-
+    protected final float GRAVITY = 0.75F;
     protected float VELOCITY_DECREASE = 0.35F;
-    protected float MAX_FALLING_SPEED = 12.5F;
+    protected float MAX_FALLING_SPEED = 16.5F;
     protected float JUMP_START;
+    protected float JUMP_HEIGHT;
+    protected float ACCELERATION = 0.75f;
 
     protected int PADDING_LEFT;
     protected int PADDING_RIGHT;
@@ -32,7 +32,7 @@ public class Entity {
 
     protected float width;
     protected float height;
-    protected float speed;
+    public float speed;
 
     // MOVEMENT
 
@@ -43,7 +43,7 @@ public class Entity {
     // COLLISIONS
 
     private Rectangle box; //todo just use coordinates to detect collision
-    private boolean topLeft, topRight, midLeft, midRight, bottomLeft, bottomRight;
+    private boolean topLeft, topRight, mid1Left, mid1Right, mid2Left, mid2Right, bottomLeft, bottomRight;
 
     protected float blockFriction;
     protected float airFriction = 1.0f;
@@ -52,6 +52,12 @@ public class Entity {
 
     protected int immunity = 240;
     protected float time;
+
+    public static float spawnRate = 15f;
+
+    public Entity() {
+
+    }
 
     public Entity(World world, float x, float y) {
         this.world = world;
@@ -87,13 +93,13 @@ public class Entity {
 
         calculateCorners(tox, y - 1);
         if (dx < 0) {
-            if (topLeft || midLeft || bottomLeft) {
+            if (topLeft || mid1Left || mid2Left || bottomLeft) {
                 dx = 0;
             }
         }
 
         if (dx > 0) {
-            if (topRight || midRight || bottomRight) {
+            if (topRight || mid1Right || mid2Right || bottomRight) {
                 dx = 0;
             }
         }
@@ -117,9 +123,9 @@ public class Entity {
             falling = false;
             dy = 0;
 
-            int add = 0;
+            int add = 8;
             if (this instanceof EntityItem)
-                add = 16;
+                add = Material.SIZE - (int)this.height;
 
             int pr = world.getBlockY((int) toy);
             float ya = (pr * Material.SIZE) + add;
@@ -142,24 +148,27 @@ public class Entity {
     }
 
     private void calculateCorners(float x, float y) {
-        int leftTile = (int) x + PADDING_LEFT - 4;
-        int rightTile = (int) x + (int) width - PADDING_RIGHT;
-        int topTile = (int) y + 2;
-        int midTile = (int) (y + height / 2);
-        int bottomTile = (int) y + (int) width;
+        int leftTile = (int) (x + PADDING_LEFT) / Material.SIZE;
+        int rightTile = (int) (x + (int) width - PADDING_RIGHT) / Material.SIZE;
+        int topTile = (int) (y + 2) / Material.SIZE;
+        int mid1Tile = (int) ((y + height / 2) - 8f) / Material.SIZE;
+        int mid2Tile = (int) ((y + height / 2) + 8f) / Material.SIZE;
+        int bottomTile = (int) (y + (int) height) / Material.SIZE;
 
         try {
-            topLeft = !world.getBlockFromChunks(leftTile, topTile).getMaterial().isPassable();
-            topRight = !world.getBlockFromChunks(rightTile, topTile).getMaterial().isPassable();
-            midLeft = !world.getBlockFromChunks(leftTile, midTile).getMaterial().isPassable();
-            midRight = !world.getBlockFromChunks(rightTile, midTile).getMaterial().isPassable();
-            bottomLeft = !world.getBlockFromChunks(leftTile, bottomTile).getMaterial().isPassable();
-            bottomRight = !world.getBlockFromChunks(rightTile, bottomTile).getMaterial().isPassable();
+            topLeft = !Material.fromID(world.getBlock(leftTile, topTile)).isPassable();
+            topRight = !Material.fromID(world.getBlock(rightTile, topTile)).isPassable();
+            mid1Left = !Material.fromID(world.getBlock(leftTile, mid1Tile)).isPassable();
+            mid1Right = !Material.fromID(world.getBlock(rightTile, mid1Tile)).isPassable();
+            mid2Left = !Material.fromID(world.getBlock(leftTile, mid2Tile)).isPassable();
+            mid2Right = !Material.fromID(world.getBlock(rightTile, mid2Tile)).isPassable();
+            bottomLeft = !Material.fromID(world.getBlock(leftTile, bottomTile)).isPassable();
+            bottomRight = !Material.fromID(world.getBlock(rightTile, bottomTile)).isPassable();
 
-            Block bottomLeftBlock = world.getBlockFromChunks(leftTile, bottomTile);
-            Block bottomRightBlock = world.getBlockFromChunks(rightTile, bottomTile);
+            Material bottomLeftBlock = Material.fromID(world.getBlock(leftTile, bottomTile));
+            Material bottomRightBlock = Material.fromID(world.getBlock(rightTile, bottomTile));
 
-            if (bottomLeftBlock.getMaterial().getID() == Material.AIR.getID() || bottomRightBlock.getMaterial().getID() == Material.AIR.getID()) {
+            if (bottomLeftBlock.getID() == Material.AIR.getID() || bottomRightBlock.getID() == Material.AIR.getID()) {
                 blockFriction = airFriction;
             } else {
                 blockFriction = (bottomLeftBlock.getFriction() + bottomRightBlock.getFriction()) / 2;
@@ -168,6 +177,10 @@ public class Entity {
         } catch (Exception e) {
 
         }
+    }
+
+    public Entity newInstance(World world, float x, float y) {
+        return new Entity(world, x, y);
     }
 
     public void move(float delta) {

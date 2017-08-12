@@ -2,13 +2,17 @@ package com.loafy.game.state.gui;
 
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
+import com.loafy.game.state.gui.objects.GuiButton;
 import com.loafy.game.state.gui.objects.GuiWorldButton;
 import com.loafy.game.world.WorldLoader;
 import com.loafy.game.world.data.WorldData;
+import org.lwjgl.Sys;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class GuiPlay extends Gui {
 
@@ -21,7 +25,9 @@ public class GuiPlay extends Gui {
     }
 
     public void updateWorlds() {
-        getButtons().clear();
+        getButtons().removeIf(guiButton -> guiButton instanceof GuiWorldButton);
+        worlds.clear();
+
 
         String path = Resources.gameLocation + "/saves";
         Resources.makeFile(path);

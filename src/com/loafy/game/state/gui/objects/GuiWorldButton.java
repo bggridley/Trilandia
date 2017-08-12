@@ -5,8 +5,8 @@ import com.loafy.game.resources.Resources;
 import com.loafy.game.state.MenuState;
 import com.loafy.game.state.gui.GuiDeleteWorld;
 import com.loafy.game.world.data.WorldData;
-import org.newdawn.slick.Color;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class GuiWorldButton extends GuiButton {

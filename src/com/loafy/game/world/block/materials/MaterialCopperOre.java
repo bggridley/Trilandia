@@ -5,6 +5,7 @@ import com.loafy.game.item.material.ItemSmallStone;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,7 +13,7 @@ import java.util.Random;
 public class MaterialCopperOre extends Material {
 
     public MaterialCopperOre() {
-        super(14, 500, 0.13f, true, false, MaterialType.BLOCK, "Copper Ore");
+        super("copper_ore",14, 500, 0.13f, true, false, MaterialType.BLOCK, "Copper Ore", new Color(183, 107, 66));
     }
 
  /*   public List<ItemStack> getDrops() {

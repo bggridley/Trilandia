@@ -8,8 +8,8 @@ import com.loafy.game.item.Item;
 import com.loafy.game.item.ItemStack;
 import com.loafy.game.resources.Resources;
 import com.loafy.game.state.gui.Gui;
-import org.newdawn.slick.Color;
 
+import java.awt.*;
 import java.util.LinkedList;
 
 public class Container {
@@ -75,7 +75,7 @@ public class Container {
             if (!slot.isSelected())
                 slotTexture.render(x, y);
             else {
-                slotTexture.render(x, y, 1f, false, Color.pink);
+                slotTexture.render(x, y, 1f, false, Color.PINK);
             }
 
             if (slot.getItemStack() != null)
@@ -87,7 +87,7 @@ public class Container {
             Item item = slot.getItemStack().getItem();
 
             if (slot.getItemStack().getItem() != null && !item.getName().equalsIgnoreCase("item name"))
-                Font.renderString(item.getName(), InputManager.mouseX + 32f, InputManager.mouseY, 2f, Color.white);
+                Font.renderString(item.getName(), InputManager.mouseX + 32f, InputManager.mouseY, 2f, Color.WHITE);
         }
     }
 
@@ -98,7 +98,7 @@ public class Container {
     public void renderItemStack(ItemStack stack, float x, float y) {
         stack.renderInContainer(x, y);
         if (stack.getItem().getMaxStackSize() == 1 || stack.getItem().getID() != -1)
-            Font.renderString(String.valueOf(stack.getAmount()), x + ContainerSlot.SIZE - 36f, y + 16f, 2f, Color.white);
+            Font.renderString(String.valueOf(stack.getAmount()), x + ContainerSlot.SIZE - 36f, y + 16f, 2f, Color.WHITE);
     }
 
     public void updateInput(EntityPlayer player) {

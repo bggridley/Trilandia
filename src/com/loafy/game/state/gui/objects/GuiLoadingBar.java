@@ -4,7 +4,8 @@ import com.loafy.game.gfx.Font;
 import com.loafy.game.gfx.Graphics;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class GuiLoadingBar extends GuiObject {
 
@@ -36,10 +37,10 @@ public class GuiLoadingBar extends GuiObject {
         GL11.glColor3f(0.0f, 0.8f, 0.0f);
         GL11.glRectf(drawX, y, drawX + (step * increment), y + height);
 
-        Graphics.setColor(Color.black);
+        Graphics.setColor(Color.BLACK);
         Graphics.drawRect(drawX, y, width, height, 2);
 
-        Font.renderCenteredString(status, y + 40, 4f, Color.white);
+        Font.renderCenteredString(status, y + 40, 4f, Color.WHITE);
     }
 
     public void setStatus(String status) {

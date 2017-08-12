@@ -5,8 +5,9 @@ import com.loafy.game.gfx.Graphics;
 import com.loafy.game.input.InputManager;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
 import util.KeyConversions;
+
+import java.awt.*;
 
 public class GuiTextbox extends GuiObject {
 
@@ -16,11 +17,20 @@ public class GuiTextbox extends GuiObject {
 
     private float time = 1;
 
-    public GuiTextbox(float x, float y, int size, int maxLength) {
+    private float textboxWidth = 300;
+    private float textboxHeight = 30;
+
+    public GuiTextbox(float x, float y, int size, int maxLength, float textboxWidth, float textboxHeight) {
         super(x, y);
         this.text = "";
         this.maxLength = maxLength;
         this.size = size;
+        this.textboxWidth = textboxWidth;
+        this.textboxHeight = textboxHeight;
+    }
+
+    public GuiTextbox(float y, int size, int maxLength, float textboxWidth, float textboxHeight) {
+        this((Display.getWidth() - textboxWidth) / 2, y, size, maxLength, textboxWidth, textboxHeight);
     }
 
     public void update(float delta) {
@@ -44,18 +54,16 @@ public class GuiTextbox extends GuiObject {
     }
 
     public void render() {
-        float textboxWidth = 300;
-        float textboxHeight = 30;
-        Graphics.setColor(Color.black);
-        Graphics.drawRect((Display.getWidth() - textboxWidth) / 2, y, textboxWidth, textboxHeight, 2);
-        renderUnderscore(Font.renderString(text, x - 40, y + 6, size, Color.black));
+        Graphics.setColor(Color.BLACK);
+        Graphics.drawRect(x, y, textboxWidth, textboxHeight, 2);
+        renderUnderscore(Font.renderString(text, x, y + 6, size, Color.BLACK));
         //System.out.println(text);
     }
 
     public void renderUnderscore(float width) {
         if (((int) time / 15 % 2 == 0)) {
             String s = text.length() == maxLength ? "|" : "_";
-            Font.renderString(s, x - 40 + width, y + 6, size, Color.black);
+            Font.renderString(s, x - 40 + width, y + 6, size, Color.BLACK);
         }
     }
 }

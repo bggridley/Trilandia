@@ -8,20 +8,17 @@ import com.loafy.game.world.block.Material;
 
 public class ItemBlock extends Item {
 
-    private SpriteSheet blocks;
     private Material material;
-    private Texture texture;
 
     public ItemBlock(Material material) {
         this.id = material.getID() + 128;
-        this.blocks = Resources.blocksSprite;
         this.material = material;
-        this.texture = Resources.itemsSprite.getTexture(15);
+      //  this.texture = Resources.itemsSprite.getTexture(15);
     }
 
     public Texture getTexture() {
         if (id != -1)
-            return blocks.getTexture(id - 128);
+            return Material.fromID(id - 128).getTexture();
 
         return new Texture(0, 0, 0);
     }
@@ -40,7 +37,7 @@ public class ItemBlock extends Item {
     }
 
     public void render(float x, float y) {
-        getTexture().render(x, y);
+        getTexture().render(x, y, 1f, false);
     }
 
     public void render(float x, float y, float scale, boolean flip) {

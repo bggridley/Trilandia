@@ -3,7 +3,8 @@ package com.loafy.game.entity;
 import com.loafy.game.Main;
 import com.loafy.game.item.Item;
 import com.loafy.game.world.World;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class EntityItem extends Entity {
 

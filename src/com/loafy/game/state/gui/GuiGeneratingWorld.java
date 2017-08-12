@@ -14,7 +14,7 @@ public class GuiGeneratingWorld extends Gui {
     }
 
     public void generate(String fileName, String worldName) {
-        Main.ingameState.generateWorld(fileName, worldName, 2000, 992);
+        Main.ingameState.generateWorld(fileName, worldName, 5000, 3000);
     }
 
     public void update(float delta) {

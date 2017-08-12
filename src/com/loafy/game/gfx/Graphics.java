@@ -1,7 +1,9 @@
 package com.loafy.game.gfx;
 
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Graphics {
 
@@ -89,5 +91,38 @@ public class Graphics {
         GL11.glEnd();
         GL11.glPopMatrix();
         */
+    }
+
+    public static java.awt.Color averageColor(BufferedImage bi) {
+        int x1 =  bi.getWidth();
+        int y1 =  bi.getHeight();
+        long sumr = 0, sumg = 0, sumb = 0;
+        for (int i = 0; i < x1; i++) {
+            for (int j = 0; j < y1; j++) {
+                java.awt.Color pixel = new java.awt.Color(bi.getRGB(i, j));
+                sumr += pixel.getRed();
+                sumg += pixel.getGreen();
+                sumb += pixel.getBlue();
+            }
+        }
+
+        int num = bi.getWidth() * bi.getHeight();
+        return new java.awt.Color(sumr / num / 255f, sumg / num / 255f, sumb / num / 255f);
+    }
+
+    public static void setRed(int r) {
+        Graphics.r = r / 255f;
+    }
+
+    public static void setGreen(int g) {
+        Graphics.g = g / 255f;
+    }
+
+    public static void setBlue(int b) {
+        Graphics.b = b / 255f;
+    }
+
+    public static void setAlpha(int a) {
+        Graphics.a = a / 255f;
     }
 }

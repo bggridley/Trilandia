@@ -26,6 +26,8 @@ public class PlayerController {
     public void update(float delta) {
         int leftk = Controls.getControls().get("left");
         int rightk = Controls.getControls().get("right");
+
+
         player.left = Keyboard.isKeyDown(leftk);
         player.right = Keyboard.isKeyDown(rightk);
 
@@ -35,6 +37,8 @@ public class PlayerController {
         if (InputManager.keyPressed(Controls.getControls().get("inventory"))) {
             player.toggleInventory();
         }
+
+
 
         handleItemActions(delta);
     }

@@ -5,7 +5,8 @@ import com.loafy.game.gfx.Texture;
 import com.loafy.game.input.InputManager;
 import com.loafy.game.resources.Resources;
 import org.lwjgl.opengl.Display;
-import org.newdawn.slick.Color;
+
+import java.awt.*;
 
 public class GuiButton extends GuiObject {
 
@@ -62,7 +63,7 @@ public class GuiButton extends GuiObject {
         if (text != null) {
             float size = 2f;
 
-            Font.renderCenteredString(text, y + 14f, size, Color.black);
+            Font.renderCenteredString(text, y + 14f, size, Color.BLACK);
         }
     }
 

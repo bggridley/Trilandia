@@ -3,7 +3,6 @@ package com.loafy.game.gfx;
 import com.loafy.game.resources.Resources;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,6 +13,7 @@ import java.nio.ByteBuffer;
 public class Texture {
 
     private int tex;
+    private static BufferedImage image;
     private float width, height;
 
     public Texture(int tex, float width, float height) {
@@ -29,13 +29,16 @@ public class Texture {
     public static BufferedImage loadBi(String name, int scale) {
         BufferedImage img;
         try {
+            System.out.println(Resources.gameLocation + "/res/" + name);
             img = ImageIO.read(new File(Resources.gameLocation + "/res/" + name));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
-        return toBufferedImage(img.getScaledInstance(img.getWidth() * scale, img.getHeight() * scale, BufferedImage.SCALE_SMOOTH));
+
+        image = toBufferedImage(img.getScaledInstance(img.getWidth() * scale, img.getHeight() * scale, BufferedImage.SCALE_SMOOTH));
+        return image;
     }
 
     public static Texture loadTexture(BufferedImage img) {
@@ -153,6 +156,10 @@ public class Texture {
         bGr.drawImage(img, 0, 0, null);
         bGr.dispose();
         return bimage;
+    }
+
+    public BufferedImage getImage() {
+        return image;
     }
 
     public float getWidth() {

@@ -2,10 +2,12 @@ package com.loafy.game.world.block;
 
 import com.loafy.game.entity.player.EntityPlayer;
 import com.loafy.game.item.ItemStack;
+import com.loafy.game.resources.Resources;
 import com.loafy.game.world.World;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.geom.Rectangle;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -32,14 +34,8 @@ public class Block {
         this.box = new Rectangle(x, y, Material.SIZE, Material.SIZE);
     }
 
-    public void render(float xOffset, float yOffset, float renderLight) {
-       /* float renderLight = light;
-        if(renderLight <= 0.03f) {
-            renderLight = 0.03f;
-        }*/
-
-        if (!(x - xOffset + Material.SIZE < 0 || x - xOffset > Display.getWidth() || y - yOffset + Material.SIZE < 0 || y - yOffset > Display.getHeight())) {
-            material.render(x - xOffset, y - yOffset, renderLight);
+    public void render(float xOffset, float yOffset, float renderLight, int r, int g, int b) {
+            material.render(x - xOffset, y - yOffset, renderLight, r, g, b);
             if (hardness != maxHardness) {
 
                 float space = maxHardness / 7;
@@ -50,9 +46,8 @@ public class Block {
                         state = i;
                 }
 
-                material.getSpriteSheet().getTexture(32 + state).render(x - xOffset, y - yOffset);
+                Resources.breakSprite.getTexture(state).render(x - xOffset, y - yOffset);
             }
-        }
     }
 
     public void clickLeft(EntityPlayer player) {

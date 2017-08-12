@@ -1,5 +1,7 @@
 package com.loafy.game.gfx;
 
+import com.loafy.game.Main;
+
 public class Animation {
 
     // SHEET
@@ -13,27 +15,34 @@ public class Animation {
     public static final int LOOP = 1;
     public static final int CUSTOM = 2;
 
+    private boolean flipped = false;
+
     // FRAMES
 
     private int start;
     private int end;
     private int frame;
     private float interval;
-    private int time;
+    private float time;
+
+
+    public Animation(Texture texture, int rows, int cols) {
+        this.sheet = new SpriteSheet(texture.getImage(), rows, cols);
+    }
 
     public Animation(String path, int scale, int rows, int cols) {
         this.sheet = new SpriteSheet(Texture.loadBi(path, scale), rows, cols);
     }
 
     public void render(float x, float y, float light) {
-        sheet.getTexture(frame).render(x, y, 1f, false, light, light, light, 255f);
+        sheet.getTexture(frame).render(x, y, 1f, flipped, light, light, light, 255f);
     }
 
-    public void update() {
-        time++;
-
+    public void update(float delta) {
+        time+= delta;
         if (type != STILL) {
-            if (time % (int) interval == 0) {
+            if (time >= interval) {
+                time = 0;
                 if (frame >= end)
                     frame = start;
                 else
@@ -42,11 +51,19 @@ public class Animation {
         }
     }
 
+    public boolean isFlipped() {
+        return flipped;
+    }
+
+    public void setFlipped(boolean flipped) {
+        this.flipped = flipped;
+    }
+
     public Texture getFrame() {
         return sheet.getTexture(frame);
     }
 
-    public void setInterval(int interval) {
+    public void setInterval(float interval) {
         this.interval = interval; //* ((float)Main.FPS / (float)Main.UPS);
     }
 

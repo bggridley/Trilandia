@@ -43,6 +43,7 @@ public class PlayerInventory extends Inventory {
         this.slots.get(4).setItemStack(new ItemStack(new ItemWood(), 99));
         this.slots.get(5).setItemStack(new ItemStack(new ItemPlantFiber(), 15));
         this.slots.get(6).setItemStack(new ItemStack(new ItemBlock(Material.TORCH), 100));
+        this.slots.get(7).setItemStack(new ItemStack(new ItemBlock(Material.CERISE_STONE), 100));
 
         inventoryChange();
     }

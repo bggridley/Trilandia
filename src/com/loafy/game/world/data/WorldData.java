@@ -3,9 +3,10 @@ package com.loafy.game.world.data;
 import com.loafy.game.world.World;
 import com.loafy.game.world.WorldBase;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class WorldData {
+public class WorldData implements Serializable {
 
     public Date date;
     public String name;

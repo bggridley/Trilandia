@@ -4,12 +4,14 @@ import com.loafy.game.world.World;
 import com.loafy.game.world.block.Block;
 import com.loafy.game.world.block.Material;
 
+import java.awt.*;
+
 import static com.loafy.game.world.block.MaterialType.BLOCK;
 
 public class MaterialChest extends Material {
 
     public MaterialChest() {
-        super(8, 750, 0.1f, true, true, BLOCK, "Chest");
+        super("chest",8, 750, 0.1f, true, true, BLOCK, "Chest", new Color(121, 88, 70));
 
         this.transparent = true;
     }

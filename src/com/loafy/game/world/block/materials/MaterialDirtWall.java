@@ -6,9 +6,9 @@ import java.awt.*;
 
 import static com.loafy.game.world.block.MaterialType.WALL;
 
-public class MaterialWoodWall extends Material {
+public class MaterialDirtWall extends Material {
 
-    public MaterialWoodWall() {
-        super("wood_wall",21, 70, 0.1f, true, true, WALL, "Wood Wall", new Color(76, 59, 45));
+    public MaterialDirtWall() {
+        super("dirt_wall", 18, 85, 0f, true, true, WALL, "Dirt Wall", new Color(79, 61, 46));
     }
 }

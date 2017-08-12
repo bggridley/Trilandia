@@ -8,13 +8,14 @@ import com.loafy.game.world.block.Material;
 import com.loafy.game.world.block.MaterialType;
 import com.loafy.game.world.lighting.LightMap;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialLog extends Material {
 
     public MaterialLog() {
-        super(4, 2000, LightMap.DEFAULT, true, true, MaterialType.BLOCK, "Log");
+        super("log",4, 2000, LightMap.DEFAULT, true, true, MaterialType.BLOCK, "Log", new Color(72, 49, 35));
     }
 
     public void destroy(World world, float x, float y) {

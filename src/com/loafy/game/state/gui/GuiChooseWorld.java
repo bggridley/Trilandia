@@ -10,8 +10,8 @@ import com.loafy.game.state.gui.objects.GuiWorldButton;
 import com.loafy.game.world.WorldLoader;
 import com.loafy.game.world.block.Material;
 import com.loafy.game.world.data.WorldData;
-import org.newdawn.slick.Color;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class GuiChooseWorld extends Gui {
         renderWalls(false, end - 5, end);
 
         if (title != null)
-            Font.renderCenteredString(title, 42, 8f, Color.white);
+            Font.renderCenteredString(title, 42, 8f, Color.WHITE);
 
         for (GuiButton button : buttons) {
             if (!(button instanceof GuiWorldButton))

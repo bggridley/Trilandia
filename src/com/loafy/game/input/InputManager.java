@@ -12,7 +12,7 @@ public class InputManager {
 
     public static boolean mouse1, mouse2, mouse3;
     public static boolean mouse1p, mouse2p, mouse3p;
-    public static int mouseWu, mouseWd;
+    public static int mouseWd;
 
     public static float mouseX, mouseY;
 
@@ -49,6 +49,7 @@ public class InputManager {
         mouse3p = false;
 
         mouseWd = Mouse.getDWheel();
+
 
         while (Mouse.next()) {
             if (Mouse.getEventButtonState()) {

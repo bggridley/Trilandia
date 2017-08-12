@@ -7,8 +7,8 @@ import com.loafy.game.state.IngameState;
 import com.loafy.game.state.gui.objects.GuiButton;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.newdawn.slick.Color;
 
+import java.awt.*;
 import java.util.LinkedList;
 
 public class Gui {
@@ -57,7 +57,7 @@ public class Gui {
         }
 
         if (title != null)
-            Font.renderCenteredString(title, 42, 6f, Color.white);
+            Font.renderCenteredString(title, 42, 6f, Color.WHITE);
     }
 
     public void update(float delta) {
